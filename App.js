@@ -1,4 +1,3 @@
-// import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -8,18 +7,70 @@ import {
   Button,
   StatusBar,
 } from "react-native";
+import * as FileSystem from "expo-file-system";
+import { Asset } from "expo-asset";
+import * as SQLite from "expo-sqlite";
+
+function openDatabase(pathToDatabaseFile) {
+  // if (
+  //   !FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite").exists
+  // ) {
+  //   FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
+  // }
+  FileSystem.downloadAsync(
+    Asset.fromModule(require("./assets/cards.db")).uri,
+    FileSystem.documentDirectory + "SQLite/cards.db"
+  );
+  return SQLite.openDatabase("cards.db");
+}
+
+const db = openDatabase();
 
 export default function App() {
   const [cue, setCue] = useState("No cues");
+  const [headline, setHeadline] = useState("");
+  const [bullets, setBullets] = useState([]);
 
-  const displayNextCue = () => {
-    console.log("Next cue");
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    let parts = cue.split("\n");
+    setHeadline(parts[0]);
+    setBullets(parts.slice(1));
+  }, [cue]);
+
+  const fetchData = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT text FROM cards ORDER BY RANDOM() LIMIT 1",
+        null,
+        // success callback which sends two things Transaction object and ResultSet Object
+        (
+          txObj,
+          {
+            rows: {
+              _array: [{ text }],
+            },
+          }
+        ) => {
+          console.log(text);
+          setCue(text);
+        },
+        // failure callback which sends two things Transaction object and Error
+        (txObj, error) => console.log("Error ", error)
+      );
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{cue}</Text>
-      <Button title="Next" onPress={displayNextCue}></Button>
+      <Text>{headline}</Text>
+      {bullets.map((bullet, i) => (
+        <Text key={i}>- {bullet}</Text>
+      ))}
+      <Button title="Next" onPress={fetchData}></Button>
     </SafeAreaView>
   );
 }
