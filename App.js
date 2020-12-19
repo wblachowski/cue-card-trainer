@@ -6,6 +6,7 @@ import {
   Platform,
   Button,
   StatusBar,
+  View,
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
@@ -28,16 +29,57 @@ const db = openDatabase();
 
 export default function App() {
   const [card, setCard] = useState({ title: "No cards" });
+  const [secs, setSecs] = useState(5);
+  const [timerActive, setTimerActive] = useState(false);
+  const [timesUp, setTimesUp] = useState(false);
+  const [cardId, setCardId] = useState(0);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setSecs(5);
+    fetchData(cardId);
+  }, [cardId]);
 
-  const fetchData = () => {
+  useEffect(() => {
+    let interval = null;
+    if (timerActive) {
+      setTimesUp(false);
+      interval = setInterval(() => {
+        setSecs((secs) => secs - 1);
+      }, 1000);
+    } else if (!timerActive && secs !== 0) {
+      clearInterval(interval);
+    }
+    if (timerActive && secs <= 0) {
+      setTimerActive(false);
+      setTimesUp(true);
+      console.log("finito");
+    }
+    return () => clearInterval(interval);
+  }, [timerActive, secs]);
+
+  const timeStr = () => {
+    return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+  };
+
+  const startTimer = () => {
+    setSecs(5);
+    setTimerActive(true);
+  };
+
+  const nextCard = () => {
+    setCardId((prev) => prev + 1);
+  };
+
+  const prevCard = () => {
+    setCardId((prev) => Math.max(0, prev - 1));
+  };
+
+  const fetchData = (id = 0) => {
+    console.log(id);
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT * FROM cards ORDER BY RANDOM() LIMIT 1",
-        null,
+        "SELECT * FROM cards LIMIT 1 OFFSET ?",
+        [id],
         // success
         (
           txObj,
@@ -60,11 +102,16 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <Text>{card.title}</Text>
       <Text>{card.prompt}</Text>
-      {card.bullets.map((bullet, i) => (
+      {(card.bullets || []).map((bullet, i) => (
         <Text key={i}>- {bullet}</Text>
       ))}
       <Text>{card.ending}</Text>
-      <Button title="Next" onPress={fetchData}></Button>
+      <Text style={{ color: timesUp ? "red" : "black" }}>{timeStr()}</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Button title="Prev" onPress={prevCard}></Button>
+        <Button title="Start" onPress={startTimer}></Button>
+        <Button title="Next" onPress={nextCard}></Button>
+      </View>
     </SafeAreaView>
   );
 }
