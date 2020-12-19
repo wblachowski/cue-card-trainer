@@ -33,11 +33,23 @@ export default function App() {
   const [timerActive, setTimerActive] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [cardId, setCardId] = useState(0);
+  const [cardCount, setCardCount] = useState(-1);
 
   useEffect(() => {
     setSecs(5);
-    fetchData(cardId);
+    setTimesUp(false);
+    if (cardCount < 0) {
+      getCardsCount();
+    } else {
+      fetchData(cardId);
+    }
   }, [cardId]);
+
+  useEffect(() => {
+    if (cardCount > 0) {
+      fetchData(cardId);
+    }
+  }, [cardCount]);
 
   useEffect(() => {
     let interval = null;
@@ -52,7 +64,6 @@ export default function App() {
     if (timerActive && secs <= 0) {
       setTimerActive(false);
       setTimesUp(true);
-      console.log("finito");
     }
     return () => clearInterval(interval);
   }, [timerActive, secs]);
@@ -67,12 +78,42 @@ export default function App() {
   };
 
   const nextCard = () => {
-    setCardId((prev) => prev + 1);
+    setCardId((prev) => {
+      if (prev + 1 >= cardCount) {
+        return 0;
+      }
+      return prev + 1;
+    });
   };
 
   const prevCard = () => {
-    setCardId((prev) => Math.max(0, prev - 1));
+    setCardId((prev) => {
+      if (prev - 1 < 0) {
+        return cardCount - 1;
+      }
+      return prev - 1;
+    });
   };
+
+  const getCardsCount = () =>
+    db.transaction((tx) =>
+      tx.executeSql(
+        "SELECT COUNT(*) AS count FROM cards",
+        null,
+        // success
+        (
+          txObj,
+          {
+            rows: {
+              _array: [{ count }],
+            },
+          }
+        ) => {
+          setCardCount(count);
+          console.log("COUNT:", count);
+        }
+      )
+    );
 
   const fetchData = (id = 0) => {
     console.log(id);
@@ -89,8 +130,10 @@ export default function App() {
             },
           }
         ) => {
-          fetchedCard.bullets = fetchedCard.bullets.split("\n");
-          setCard(fetchedCard);
+          if (fetchedCard) {
+            fetchedCard.bullets = fetchedCard.bullets?.split("\n") || [];
+            setCard(fetchedCard);
+          }
         },
         // failure
         (txObj, error) => console.log("Error ", error)
