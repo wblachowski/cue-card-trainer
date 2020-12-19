@@ -19,46 +19,38 @@ function openDatabase(pathToDatabaseFile) {
   // }
   FileSystem.downloadAsync(
     Asset.fromModule(require("./assets/cards.db")).uri,
-    FileSystem.documentDirectory + "SQLite/cards.db"
+    FileSystem.documentDirectory + "SQLite/cards2.db"
   );
-  return SQLite.openDatabase("cards.db");
+  return SQLite.openDatabase("cards2.db");
 }
 
 const db = openDatabase();
 
 export default function App() {
-  const [cue, setCue] = useState("No cues");
-  const [headline, setHeadline] = useState("");
-  const [bullets, setBullets] = useState([]);
+  const [card, setCard] = useState({ title: "No cards" });
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    let parts = cue.split("\n");
-    setHeadline(parts[0]);
-    setBullets(parts.slice(1));
-  }, [cue]);
-
   const fetchData = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT text FROM cards ORDER BY RANDOM() LIMIT 1",
+        "SELECT * FROM cards ORDER BY RANDOM() LIMIT 1",
         null,
-        // success callback which sends two things Transaction object and ResultSet Object
+        // success
         (
           txObj,
           {
             rows: {
-              _array: [{ text }],
+              _array: [fetchedCard],
             },
           }
         ) => {
-          console.log(text);
-          setCue(text);
+          fetchedCard.bullets = fetchedCard.bullets.split("\n");
+          setCard(fetchedCard);
         },
-        // failure callback which sends two things Transaction object and Error
+        // failure
         (txObj, error) => console.log("Error ", error)
       );
     });
@@ -66,10 +58,12 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{headline}</Text>
-      {bullets.map((bullet, i) => (
+      <Text>{card.title}</Text>
+      <Text>{card.prompt}</Text>
+      {card.bullets.map((bullet, i) => (
         <Text key={i}>- {bullet}</Text>
       ))}
+      <Text>{card.ending}</Text>
       <Button title="Next" onPress={fetchData}></Button>
     </SafeAreaView>
   );
