@@ -29,15 +29,16 @@ const db = openDatabase();
 
 export default function App() {
   const [card, setCard] = useState({ title: "No cards" });
-  const [secs, setSecs] = useState(5);
+  const [secs, setSecs] = useState(120);
   const [timerActive, setTimerActive] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [cardId, setCardId] = useState(0);
   const [cardCount, setCardCount] = useState(-1);
 
   useEffect(() => {
-    setSecs(5);
+    setSecs(120);
     setTimesUp(false);
+    setTimerActive(false);
     if (cardCount < 0) {
       getCardsCount();
     } else {
@@ -73,7 +74,7 @@ export default function App() {
   };
 
   const startTimer = () => {
-    setSecs(5);
+    setSecs(120);
     setTimerActive(true);
   };
 
@@ -143,13 +144,35 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{card.title}</Text>
-      <Text>{card.prompt}</Text>
-      {(card.bullets || []).map((bullet, i) => (
-        <Text key={i}>- {bullet}</Text>
-      ))}
-      <Text>{card.ending}</Text>
-      <Text style={{ color: timesUp ? "red" : "black" }}>{timeStr()}</Text>
+      <View style={styles.mainView}>
+        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 16 }}>
+          {card.title}
+        </Text>
+        <Text style={{ fontSize: 14, marginTop: 2, marginBottom: 2 }}>
+          {card.prompt}
+        </Text>
+        {(card.bullets || []).map((bullet, i) => (
+          <Text
+            key={i}
+            style={{
+              fontSize: 14,
+              marginLeft: 20,
+              marginTop: 2,
+              marginBottom: 2,
+            }}
+          >
+            • {bullet}
+          </Text>
+        ))}
+        <Text style={{ fontSize: 14, marginTop: 2, marginBottom: 2 }}>
+          {card.ending}
+        </Text>
+      </View>
+      <View style={styles.timerView}>
+        <Text style={{ color: timesUp ? "red" : "black", fontSize: 64 }}>
+          {timeStr()}
+        </Text>
+      </View>
       <View style={styles.bottomNav}>
         <View style={styles.buttonView}>
           <Button title="Prev" onPress={prevCard}></Button>
@@ -173,13 +196,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
+  mainView: {
+    position: "absolute",
+    top: 200,
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  timerView: {
+    position: "absolute",
+    bottom: 150,
+  },
   bottomNav: {
     flexDirection: "row",
     position: "absolute",
     bottom: 20,
     width: "100%",
-    paddingLeft: 29,
-    paddingRight: 29,
+    paddingLeft: 30,
+    paddingRight: 30,
   },
   buttonView: {
     justifyContent: "space-between",
