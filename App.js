@@ -150,10 +150,16 @@ export default function App() {
       ))}
       <Text>{card.ending}</Text>
       <Text style={{ color: timesUp ? "red" : "black" }}>{timeStr()}</Text>
-      <View style={{ flexDirection: "row" }}>
-        <Button title="Prev" onPress={prevCard}></Button>
-        <Button title="Start" onPress={startTimer}></Button>
-        <Button title="Next" onPress={nextCard}></Button>
+      <View style={styles.bottomNav}>
+        <View style={styles.buttonView}>
+          <Button title="Prev" onPress={prevCard}></Button>
+        </View>
+        <View style={styles.buttonView}>
+          <Button title="Start" onPress={startTimer}></Button>
+        </View>
+        <View style={styles.buttonView}>
+          <Button title="Next" onPress={nextCard}></Button>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -166,5 +172,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  bottomNav: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: 20,
+    width: "100%",
+    paddingLeft: 29,
+    paddingRight: 29,
+  },
+  buttonView: {
+    justifyContent: "space-between",
+    flex: 1,
+    backgroundColor: "green",
   },
 });
