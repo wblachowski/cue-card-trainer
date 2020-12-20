@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
   },
   mainView: {
     position: "absolute",
+    left: 0,
     top: 200,
     marginLeft: 30,
     marginRight: 30,
