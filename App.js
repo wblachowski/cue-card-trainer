@@ -28,7 +28,7 @@ function openDatabase(pathToDatabaseFile) {
 const db = openDatabase();
 
 export default function App() {
-  const SECS = 5;
+  const SECS = 120;
   const [card, setCard] = useState({ title: "No cards" });
   const [secs, setSecs] = useState(SECS);
   const [timerActive, setTimerActive] = useState(false);
@@ -100,7 +100,7 @@ export default function App() {
     if (timerActive && !timerPaused) {
       return "pause";
     } else if (!timerActive && !timerPaused) {
-      return "start";
+      return secs > 0 ? "start" : "restart";
     } else if (!timerActive && timerPaused) {
       return "resume";
     }
@@ -111,7 +111,7 @@ export default function App() {
     if (timerActive && !timerPaused) {
       return "pause";
     }
-    return "play-arrow";
+    return secs > 0 ? "play-arrow" : "replay";
   };
 
   const mainButtonAction = () => {
@@ -219,9 +219,6 @@ export default function App() {
         <Text style={{ color: timesUp ? "red" : "black", fontSize: 64 }}>
           {timeStr()}
         </Text>
-      </View>
-      <View style={styles.buttonView}>
-        <Button primary text="Reset" onPress={prevCard}></Button>
       </View>
       <View style={styles.bottomNav}>
         <View style={styles.buttonView}>
