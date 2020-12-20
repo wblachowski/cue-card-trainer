@@ -4,10 +4,10 @@ import {
   Text,
   SafeAreaView,
   Platform,
-  Button,
   StatusBar,
   View,
 } from "react-native";
+import { Button } from "react-native-material-ui";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import * as SQLite from "expo-sqlite";
@@ -28,15 +28,17 @@ function openDatabase(pathToDatabaseFile) {
 const db = openDatabase();
 
 export default function App() {
+  const SECS = 5;
   const [card, setCard] = useState({ title: "No cards" });
-  const [secs, setSecs] = useState(120);
+  const [secs, setSecs] = useState(SECS);
   const [timerActive, setTimerActive] = useState(false);
+  const [timerPaused, setTimerPaused] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [cardId, setCardId] = useState(0);
   const [cardCount, setCardCount] = useState(-1);
 
   useEffect(() => {
-    setSecs(120);
+    setSecs(SECS);
     setTimesUp(false);
     setTimerActive(false);
     if (cardCount < 0) {
@@ -74,8 +76,53 @@ export default function App() {
   };
 
   const startTimer = () => {
-    setSecs(120);
+    setSecs(SECS);
     setTimerActive(true);
+  };
+
+  const pauseTimer = () => {
+    setTimerActive(false);
+    setTimerPaused(true);
+  };
+
+  const continueTimer = () => {
+    setTimerActive(true);
+    setTimerPaused(false);
+  };
+
+  const resetTimer = () => {
+    setSecs(SECS);
+    setTimerActive(false);
+    setTimerPaused(false);
+  };
+
+  const mainButtonText = () => {
+    if (timerActive && !timerPaused) {
+      return "pause";
+    } else if (!timerActive && !timerPaused) {
+      return "start";
+    } else if (!timerActive && timerPaused) {
+      return "resume";
+    }
+    return "sumthing wrond";
+  };
+
+  const mainButtonIcon = () => {
+    if (timerActive && !timerPaused) {
+      return "pause";
+    }
+    return "play-arrow";
+  };
+
+  const mainButtonAction = () => {
+    if (timerActive && !timerPaused) {
+      pauseTimer();
+    } else if (!timerActive && !timerPaused) {
+      startTimer();
+    } else if (!timerActive && timerPaused) {
+      setTimerActive(true);
+      setTimerPaused(false);
+    }
   };
 
   const nextCard = () => {
@@ -173,15 +220,23 @@ export default function App() {
           {timeStr()}
         </Text>
       </View>
+      <View style={styles.buttonView}>
+        <Button primary text="Reset" onPress={prevCard}></Button>
+      </View>
       <View style={styles.bottomNav}>
         <View style={styles.buttonView}>
-          <Button title="Prev" onPress={prevCard}></Button>
+          <Button primary text="Prev" onPress={prevCard}></Button>
         </View>
         <View style={styles.buttonView}>
-          <Button title="Start" onPress={startTimer}></Button>
+          <Button
+            primary
+            text={mainButtonText()}
+            onPress={mainButtonAction}
+            icon={mainButtonIcon()}
+          ></Button>
         </View>
         <View style={styles.buttonView}>
-          <Button title="Next" onPress={nextCard}></Button>
+          <Button primary text="Next" onPress={nextCard}></Button>
         </View>
       </View>
     </SafeAreaView>
@@ -212,12 +267,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     width: "100%",
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingLeft: 18,
+    paddingRight: 18,
   },
   buttonView: {
     justifyContent: "space-between",
     flex: 1,
-    backgroundColor: "green",
+    marginLeft: 12,
+    marginRight: 12,
   },
 });
