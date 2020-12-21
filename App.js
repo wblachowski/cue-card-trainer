@@ -11,6 +11,7 @@ import { Button } from "react-native-material-ui";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import * as SQLite from "expo-sqlite";
+import Card from "./Card";
 
 function openDatabase(pathToDatabaseFile) {
   // if (
@@ -190,30 +191,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.mainView}>
-        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 16 }}>
-          {card.title}
-        </Text>
-        <Text style={{ fontSize: 14, marginTop: 2, marginBottom: 2 }}>
-          {card.prompt}
-        </Text>
-        {(card.bullets || []).map((bullet, i) => (
-          <Text
-            key={i}
-            style={{
-              fontSize: 14,
-              marginLeft: 20,
-              marginTop: 2,
-              marginBottom: 2,
-            }}
-          >
-            • {bullet}
-          </Text>
-        ))}
-        <Text style={{ fontSize: 14, marginTop: 2, marginBottom: 2 }}>
-          {card.ending}
-        </Text>
-      </View>
+      <Card card={card} />
       <View style={styles.timerView}>
         <Text style={{ color: timesUp ? "red" : "black", fontSize: 64 }}>
           {timeStr()}
