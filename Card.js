@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 export default function Card({ card }) {
   return (
-    <View style={styles.mainView}>
+    <View>
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 16 }}>
         {card.title}
       </Text>
@@ -29,13 +29,3 @@ export default function Card({ card }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  mainView: {
-    position: "absolute",
-    left: 0,
-    top: 200,
-    marginLeft: 30,
-    marginRight: 30,
-  },
-});

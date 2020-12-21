@@ -191,7 +191,9 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Card card={card} />
+      <View style={styles.cardView}>
+        <Card card={card} />
+      </View>
       <View style={styles.timerView}>
         <Text style={{ color: timesUp ? "red" : "black", fontSize: 64 }}>
           {timeStr()}
@@ -225,11 +227,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
-  mainView: {
+  cardView: {
     position: "absolute",
     left: 0,
     top: 200,
-    marginLeft: 30,
+    paddingLeft: 30,
     marginRight: 30,
   },
   timerView: {
