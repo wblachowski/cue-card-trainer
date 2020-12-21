@@ -42,6 +42,7 @@ export default function App() {
     setSecs(SECS);
     setTimesUp(false);
     setTimerActive(false);
+    setTimerPaused(false);
     if (cardCount < 0) {
       getCardsCount();
     } else {
