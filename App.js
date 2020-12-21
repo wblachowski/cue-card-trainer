@@ -120,8 +120,7 @@ export default function App() {
     } else if (!timerActive && !timerPaused) {
       startTimer();
     } else if (!timerActive && timerPaused) {
-      setTimerActive(true);
-      setTimerPaused(false);
+      continueTimer();
     }
   };
 
@@ -264,13 +263,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     width: "100%",
-    paddingLeft: 18,
-    paddingRight: 18,
+    paddingLeft: 22,
+    paddingRight: 22,
   },
   buttonView: {
     justifyContent: "space-between",
     flex: 1,
-    marginLeft: 12,
-    marginRight: 12,
+    marginLeft: 8,
+    marginRight: 8,
   },
 });
