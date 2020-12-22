@@ -22,6 +22,7 @@ export default function App() {
   const [cardCount, setCardCount] = useState(-1);
 
   useEffect(() => {
+    console.log(cardId);
     setSecs(SECS);
     setTimerState(TimerStates.notStarted);
     if (cardCount < 0) {
