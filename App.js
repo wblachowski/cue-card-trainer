@@ -7,18 +7,12 @@ import {
   StatusBar,
   View,
 } from "react-native";
-import { Button } from "react-native-material-ui";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import * as SQLite from "expo-sqlite";
 import Card from "./components/Card";
-
-const TimerStates = Object.freeze({
-  notStarted: {},
-  running: {},
-  paused: {},
-  finished: {},
-});
+import BottomNav from "./components/BottomNav";
+import { TimerStates } from "./Constants";
 
 function openDatabase(pathToDatabaseFile) {
   // if (
@@ -79,28 +73,6 @@ export default function App() {
   const startTimer = () => {
     setSecs(SECS);
     setTimerState(TimerStates.running);
-  };
-
-  const mainButtonText = () => {
-    if (timerState === TimerStates.running) {
-      return "pause";
-    } else if (timerState === TimerStates.notStarted) {
-      return "start";
-    } else if (timerState === TimerStates.finished) {
-      return "restart";
-    } else if (timerState === TimerStates.paused) {
-      return "resume";
-    }
-    return "";
-  };
-
-  const mainButtonIcon = () => {
-    if (timerState === TimerStates.running) {
-      return "pause";
-    } else if (timerState === TimerStates.finished) {
-      return "replay";
-    }
-    return "play-arrow";
   };
 
   const mainButtonAction = () => {
@@ -196,20 +168,12 @@ export default function App() {
         </Text>
       </View>
       <View style={styles.bottomNav}>
-        <View style={styles.buttonView}>
-          <Button primary text="Prev" onPress={prevCard}></Button>
-        </View>
-        <View style={styles.buttonView}>
-          <Button
-            primary
-            text={mainButtonText()}
-            onPress={mainButtonAction}
-            icon={mainButtonIcon()}
-          ></Button>
-        </View>
-        <View style={styles.buttonView}>
-          <Button primary text="Next" onPress={nextCard}></Button>
-        </View>
+        <BottomNav
+          prevClicked={prevCard}
+          playClicked={mainButtonAction}
+          nextClicked={nextCard}
+          timerState={timerState}
+        />
       </View>
     </SafeAreaView>
   );
@@ -241,11 +205,5 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: 22,
     paddingRight: 22,
-  },
-  buttonView: {
-    justifyContent: "space-between",
-    flex: 1,
-    marginLeft: 8,
-    marginRight: 8,
   },
 });
