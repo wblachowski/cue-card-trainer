@@ -7,27 +7,11 @@ import {
   StatusBar,
   View,
 } from "react-native";
-import * as FileSystem from "expo-file-system";
-import { Asset } from "expo-asset";
-import * as SQLite from "expo-sqlite";
 import Card from "./components/Card";
 import BottomNav from "./components/BottomNav";
 import { TimerStates } from "./Constants";
-
-function openDatabase(pathToDatabaseFile) {
-  // if (
-  //   !FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite").exists
-  // ) {
-  //   FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
-  // }
-  FileSystem.downloadAsync(
-    Asset.fromModule(require("./assets/cards.db")).uri,
-    FileSystem.documentDirectory + "SQLite/cards2.db"
-  );
-  return SQLite.openDatabase("cards2.db");
-}
-
-const db = openDatabase();
+import Database from "./Database";
+const db = new Database();
 
 export default function App() {
   const SECS = 5;
@@ -48,12 +32,6 @@ export default function App() {
   }, [cardId]);
 
   useEffect(() => {
-    if (cardCount > 0) {
-      fetchData(cardId);
-    }
-  }, [cardCount]);
-
-  useEffect(() => {
     let interval = null;
     if (timerState === TimerStates.running) {
       interval = setInterval(() => {
@@ -65,6 +43,24 @@ export default function App() {
     }
     return () => clearInterval(interval);
   }, [timerState, secs]);
+
+  useEffect(() => {
+    if (cardCount > 0) {
+      fetchData(cardId);
+    }
+  }, [cardCount]);
+
+  const getCardsCount = () =>
+    db.getCardsCount((cardCount) => setCardCount(cardCount));
+
+  const fetchData = (cardId, callback = setCard) =>
+    db.fetchData(cardId, (card) => callback(card));
+
+  const nextCard = () =>
+    setCardId((prev) => (prev + 1 >= cardCount ? 0 : prev + 1));
+
+  const prevCard = () =>
+    setCardId((prev) => (prev - 1 < 0 ? cardCount - 1 : prev - 1));
 
   const timeStr = () => {
     return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
@@ -86,70 +82,6 @@ export default function App() {
     } else if (timerState === TimerStates.paused) {
       setTimerState(TimerStates.running);
     }
-  };
-
-  const nextCard = () => {
-    setCardId((prev) => {
-      if (prev + 1 >= cardCount) {
-        return 0;
-      }
-      return prev + 1;
-    });
-  };
-
-  const prevCard = () => {
-    setCardId((prev) => {
-      if (prev - 1 < 0) {
-        return cardCount - 1;
-      }
-      return prev - 1;
-    });
-  };
-
-  const getCardsCount = () =>
-    db.transaction((tx) =>
-      tx.executeSql(
-        "SELECT COUNT(*) AS count FROM cards",
-        null,
-        // success
-        (
-          txObj,
-          {
-            rows: {
-              _array: [{ count }],
-            },
-          }
-        ) => {
-          setCardCount(count);
-          console.log("COUNT:", count);
-        }
-      )
-    );
-
-  const fetchData = (id = 0) => {
-    console.log(id);
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM cards LIMIT 1 OFFSET ?",
-        [id],
-        // success
-        (
-          txObj,
-          {
-            rows: {
-              _array: [fetchedCard],
-            },
-          }
-        ) => {
-          if (fetchedCard) {
-            fetchedCard.bullets = fetchedCard.bullets?.split("\n") || [];
-            setCard(fetchedCard);
-          }
-        },
-        // failure
-        (txObj, error) => console.log("Error ", error)
-      );
-    });
   };
 
   return (
