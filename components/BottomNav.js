@@ -30,7 +30,7 @@ export default function BottomNav({
       case TimerStates.running:
         return "pause";
       case TimerStates.paused:
-        return "resume";
+        return "play-arrow";
       case TimerStates.finished:
         return "replay";
     }
