@@ -11,7 +11,14 @@ import { Button } from "react-native-material-ui";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import * as SQLite from "expo-sqlite";
-import Card from "./Card";
+import Card from "./components/Card";
+
+const TimerStates = Object.freeze({
+  notStarted: {},
+  running: {},
+  paused: {},
+  finished: {},
+});
 
 function openDatabase(pathToDatabaseFile) {
   // if (
@@ -29,20 +36,16 @@ function openDatabase(pathToDatabaseFile) {
 const db = openDatabase();
 
 export default function App() {
-  const SECS = 120;
+  const SECS = 5;
   const [card, setCard] = useState({ title: "No cards" });
   const [secs, setSecs] = useState(SECS);
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerPaused, setTimerPaused] = useState(false);
-  const [timesUp, setTimesUp] = useState(false);
+  const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [cardId, setCardId] = useState(0);
   const [cardCount, setCardCount] = useState(-1);
 
   useEffect(() => {
     setSecs(SECS);
-    setTimesUp(false);
-    setTimerActive(false);
-    setTimerPaused(false);
+    setTimerState(TimerStates.notStarted);
     if (cardCount < 0) {
       getCardsCount();
     } else {
@@ -58,20 +61,16 @@ export default function App() {
 
   useEffect(() => {
     let interval = null;
-    if (timerActive) {
-      setTimesUp(false);
+    if (timerState === TimerStates.running) {
       interval = setInterval(() => {
         setSecs((secs) => secs - 1);
       }, 1000);
-    } else if (!timerActive && secs !== 0) {
-      clearInterval(interval);
     }
-    if (timerActive && secs <= 0) {
-      setTimerActive(false);
-      setTimesUp(true);
+    if (secs <= 0) {
+      setTimerState(TimerStates.finished);
     }
     return () => clearInterval(interval);
-  }, [timerActive, secs]);
+  }, [timerState, secs]);
 
   const timeStr = () => {
     return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
@@ -79,50 +78,41 @@ export default function App() {
 
   const startTimer = () => {
     setSecs(SECS);
-    setTimerActive(true);
-  };
-
-  const pauseTimer = () => {
-    setTimerActive(false);
-    setTimerPaused(true);
-  };
-
-  const continueTimer = () => {
-    setTimerActive(true);
-    setTimerPaused(false);
-  };
-
-  const resetTimer = () => {
-    setSecs(SECS);
-    setTimerActive(false);
-    setTimerPaused(false);
+    setTimerState(TimerStates.running);
   };
 
   const mainButtonText = () => {
-    if (timerActive && !timerPaused) {
+    if (timerState === TimerStates.running) {
       return "pause";
-    } else if (!timerActive && !timerPaused) {
-      return secs > 0 ? "start" : "restart";
-    } else if (!timerActive && timerPaused) {
+    } else if (timerState === TimerStates.notStarted) {
+      return "start";
+    } else if (timerState === TimerStates.finished) {
+      return "restart";
+    } else if (timerState === TimerStates.paused) {
       return "resume";
     }
-    return "sumthing wrond";
+    return "";
   };
 
   const mainButtonIcon = () => {
-    if (timerActive && !timerPaused) {
+    if (timerState === TimerStates.running) {
       return "pause";
+    } else if (timerState === TimerStates.finished) {
+      return "replay";
     }
-    return secs > 0 ? "play-arrow" : "replay";
+    return "play-arrow";
   };
 
   const mainButtonAction = () => {
-    if (timerActive && !timerPaused) {
-      pauseTimer();
-    } else if (!timerActive && !timerPaused) {
+    if (timerState === TimerStates.running) {
+      setTimerState(TimerStates.paused);
+    } else if (
+      timerState === TimerStates.notStarted ||
+      timerState === TimerStates.finished
+    ) {
       startTimer();
-    } else if (!timerActive && timerPaused) {
-      continueTimer();
+    } else if (timerState === TimerStates.paused) {
+      setTimerState(TimerStates.running);
     }
   };
 
@@ -196,7 +186,12 @@ export default function App() {
         <Card card={card} />
       </View>
       <View style={styles.timerView}>
-        <Text style={{ color: timesUp ? "red" : "black", fontSize: 64 }}>
+        <Text
+          style={{
+            color: timerState === TimerStates.finished ? "red" : "black",
+            fontSize: 64,
+          }}
+        >
           {timeStr()}
         </Text>
       </View>
