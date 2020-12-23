@@ -14,8 +14,6 @@ import Database from "./Database";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 
-let db;
-
 export default function App() {
   const SECS = 5;
   const [card, setCard] = useState({});
@@ -23,35 +21,35 @@ export default function App() {
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [cardId, setCardId] = useState(-1);
   const [cardCount, setCardCount] = useState(-1);
-  const [initialized, setInitialized] = useState(false);
+  const [db, setDb] = useState();
 
   storeLastCardId = async () =>
-    AsyncStorage.setItem("lastCardId", cardId.toString()).then(() =>
+    AsyncStorage.setItem("lastCardId", cardId.toString()).then((xd) =>
       console.log(`Saved: ${cardId}`)
     );
 
   retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
 
   useEffect(() => {
-    if (!initialized) {
-      Database.initialize()
-        .then(() => {
-          sqlite = SQLite.openDatabase("cards2.db");
-          db = new Database(sqlite);
-          console.log("database initialized");
-          return db;
-        })
-        .then((db) => getCardsCount(db))
+    Database.initialize().then(() => {
+      sqlite = SQLite.openDatabase("cards2.db");
+      setDb(new Database(sqlite));
+      console.log("database initialized");
+    });
+  }, []);
+
+  useEffect(() => {
+    if (db) {
+      getCardsCount()
         .then(retrieveLastCardId)
-        .then((cardId) => {
-          if (cardId !== null) {
-            console.log(`Retrieved: ${cardId}`);
-            setCardId(parseInt(cardId));
-            setInitialized(true);
+        .then((lastCardId) => {
+          if (lastCardId != null) {
+            console.log(`Retrieved: ${lastCardId}`);
+            setCardId(parseInt(lastCardId));
           }
         });
     }
-  }, [initialized]);
+  }, [db]);
 
   useEffect(() => {
     setSecs(SECS);
@@ -75,7 +73,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, [timerState, secs]);
 
-  const getCardsCount = (db) =>
+  const getCardsCount = () =>
     db.getCardsCount().then((cardCount) => {
       console.log(`Card count: ${cardCount}`);
       setCardCount(cardCount);
@@ -164,7 +162,7 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 20,
+    bottom: 28,
     width: "100%",
     paddingLeft: 22,
     paddingRight: 22,

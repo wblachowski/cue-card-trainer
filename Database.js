@@ -27,10 +27,18 @@ export default class Database {
       }
     }
 
-    return FileSystem.downloadAsync(
-      Asset.fromModule(require("./assets/cards.db")).uri,
-      FileSystem.documentDirectory + "SQLite/cards2.db"
+    let dbInfo = await FileSystem.getInfoAsync(
+      `${FileSystem.documentDirectory}` + "SQLite/cards2.db"
     );
+    if (!dbInfo.exists) {
+      console.log("db doesnt exist");
+      return FileSystem.downloadAsync(
+        Asset.fromModule(require("./assets/cards.db")).uri,
+        FileSystem.documentDirectory + "SQLite/cards2.db"
+      );
+    }
+    console.log("db exists");
+    return Promise.resolve();
   };
 
   getCardsCount = () =>
