@@ -22,28 +22,35 @@ export default function App() {
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [cardId, setCardId] = useState(-1);
   const [cardCount, setCardCount] = useState(-1);
+  const [initialized, setInitialized] = useState(false);
 
-  _storeData = async () =>
+  storeData = async () =>
     AsyncStorage.setItem("lastCardId", cardId.toString()).then(() =>
-      console.log(`SAVED last visited as ${cardId}`)
+      console.log(`Saved: ${cardId}`)
     );
 
-  _retrieveData = async () =>
-    AsyncStorage.getItem("lastCardId").then((value) => {
-      value !== null || setCardId(parseInt(value));
-    });
+  retrieveData = async () => AsyncStorage.getItem("lastCardId");
+
+  useEffect(() => {
+    if (!initialized) {
+      getCardsCount()
+        .then(retrieveData)
+        .then((cardId) => {
+          if (cardId !== null) {
+            console.log(`Retrieved: ${cardId}`);
+            setCardId(parseInt(cardId));
+            setInitialized(true);
+          }
+        });
+    }
+  }, [initialized]);
 
   useEffect(() => {
     setSecs(SECS);
     setTimerState(TimerStates.notStarted);
-    if (cardId < 0) {
-      _retrieveData();
-    }
-    if (cardCount < 0) {
-      getCardsCount();
-    } else if (cardId >= 0) {
+    if (cardId >= 0) {
       fetchData(cardId);
-      _storeData();
+      storeData();
     }
   }, [cardId]);
 
@@ -60,21 +67,15 @@ export default function App() {
     return () => clearInterval(interval);
   }, [timerState, secs]);
 
-  useEffect(() => {
-    if (cardCount > 0) {
-      fetchData(cardId);
-    }
-  }, [cardCount]);
-
   const getCardsCount = () =>
     db.getCardsCount().then((cardCount) => {
-      console.log(`card count: ${cardCount}`);
+      console.log(`Card count: ${cardCount}`);
       setCardCount(cardCount);
     });
 
   const fetchData = (cardId) =>
     db.fetchData(cardId).then((card) => {
-      console.log(`Displaying card ${cardId}`);
+      console.log(`Displaying: ${cardId}`);
       setCard(card);
     });
 
