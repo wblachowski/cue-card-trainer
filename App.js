@@ -24,17 +24,17 @@ export default function App() {
   const [cardCount, setCardCount] = useState(-1);
   const [initialized, setInitialized] = useState(false);
 
-  storeData = async () =>
+  storeLastCardId = async () =>
     AsyncStorage.setItem("lastCardId", cardId.toString()).then(() =>
       console.log(`Saved: ${cardId}`)
     );
 
-  retrieveData = async () => AsyncStorage.getItem("lastCardId");
+  retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
 
   useEffect(() => {
     if (!initialized) {
       getCardsCount()
-        .then(retrieveData)
+        .then(retrieveLastCardId)
         .then((cardId) => {
           if (cardId !== null) {
             console.log(`Retrieved: ${cardId}`);
@@ -50,7 +50,7 @@ export default function App() {
     setTimerState(TimerStates.notStarted);
     if (cardId >= 0) {
       fetchData(cardId);
-      storeData();
+      storeLastCardId();
     }
   }, [cardId]);
 
