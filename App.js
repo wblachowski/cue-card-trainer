@@ -11,24 +11,39 @@ import Card from "./components/Card";
 import BottomNav from "./components/BottomNav";
 import { TimerStates } from "./Constants";
 import Database from "./Database";
+import AsyncStorage from "@react-native-community/async-storage";
+
 const db = new Database();
 
 export default function App() {
   const SECS = 5;
-  const [card, setCard] = useState({ title: "No cards" });
+  const [card, setCard] = useState({});
   const [secs, setSecs] = useState(SECS);
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
-  const [cardId, setCardId] = useState(0);
+  const [cardId, setCardId] = useState(-1);
   const [cardCount, setCardCount] = useState(-1);
 
+  _storeData = async () =>
+    AsyncStorage.setItem("lastCardId", cardId.toString()).then(() =>
+      console.log(`SAVED last visited as ${cardId}`)
+    );
+
+  _retrieveData = async () =>
+    AsyncStorage.getItem("lastCardId").then((value) => {
+      value !== null || setCardId(parseInt(value));
+    });
+
   useEffect(() => {
-    console.log(cardId);
     setSecs(SECS);
     setTimerState(TimerStates.notStarted);
+    if (cardId < 0) {
+      _retrieveData();
+    }
     if (cardCount < 0) {
       getCardsCount();
-    } else {
+    } else if (cardId >= 0) {
       fetchData(cardId);
+      _storeData();
     }
   }, [cardId]);
 
@@ -52,10 +67,16 @@ export default function App() {
   }, [cardCount]);
 
   const getCardsCount = () =>
-    db.getCardsCount((cardCount) => setCardCount(cardCount));
+    db.getCardsCount().then((cardCount) => {
+      console.log(`card count: ${cardCount}`);
+      setCardCount(cardCount);
+    });
 
-  const fetchData = (cardId, callback = setCard) =>
-    db.fetchData(cardId, (card) => callback(card));
+  const fetchData = (cardId) =>
+    db.fetchData(cardId).then((card) => {
+      console.log(`Displaying card ${cardId}`);
+      setCard(card);
+    });
 
   const nextCard = () =>
     setCardId((prev) => (prev + 1 >= cardCount ? 0 : prev + 1));

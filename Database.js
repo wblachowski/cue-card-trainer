@@ -20,47 +20,49 @@ export default class Database {
     return SQLite.openDatabase("cards2.db");
   }
 
-  getCardsCount = (callback) =>
-    this.db.transaction((tx) =>
-      tx.executeSql(
-        "SELECT COUNT(*) AS count FROM cards",
-        null,
-        // success
-        (
-          txObj,
-          {
-            rows: {
-              _array: [{ count }],
-            },
-          }
-        ) => {
-          callback(count);
-        }
+  getCardsCount = () =>
+    new Promise((resolve, reject) =>
+      this.db.transaction((tx) =>
+        tx.executeSql(
+          "SELECT COUNT(*) AS count FROM cards",
+          null,
+          (
+            txObj,
+            {
+              rows: {
+                _array: [{ count }],
+              },
+            }
+          ) => {
+            resolve(count);
+          },
+          reject
+        )
       )
     );
 
-  fetchData = (id = 0, callback) => {
-    this.db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM cards LIMIT 1 OFFSET ?",
-        [id],
-        // success
-        (
-          txObj,
-          {
-            rows: {
-              _array: [fetchedCard],
-            },
-          }
-        ) => {
-          if (fetchedCard) {
-            fetchedCard.bullets = fetchedCard.bullets?.split("\n") || [];
-            callback(fetchedCard);
-          }
-        },
-        // failure
-        (txObj, error) => console.log("Error ", error)
-      );
-    });
-  };
+  fetchData = (id = 0) =>
+    new Promise((resolve, reject) =>
+      this.db.transaction((tx) =>
+        tx.executeSql(
+          "SELECT * FROM cards LIMIT 1 OFFSET ?",
+          [id],
+          // success
+          (
+            txObj,
+            {
+              rows: {
+                _array: [fetchedCard],
+              },
+            }
+          ) => {
+            if (fetchedCard) {
+              fetchedCard.bullets = fetchedCard.bullets?.split("\n") || [];
+              resolve(fetchedCard);
+            }
+          },
+          reject
+        )
+      )
+    );
 }

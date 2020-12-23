@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@expo/metro-config": "^0.1.46",
+    "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/hooks": "^2.6.0",
     "expo": "~39.0.2",
     "expo-asset": "~8.2.0",
