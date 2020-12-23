@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   buttonView: {
     justifyContent: "space-between",
     flex: 1,
-    marginLeft: 8,
-    marginRight: 8,
+    marginLeft: 4,
+    marginRight: 4,
   },
 });

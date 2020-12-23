@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   timerView: {
     position: "absolute",
-    bottom: 165,
+    bottom: 190,
   },
   bottomNav: {
     flexDirection: "row",
