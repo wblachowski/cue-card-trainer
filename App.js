@@ -12,8 +12,9 @@ import BottomNav from "./components/BottomNav";
 import { TimerStates } from "./Constants";
 import Database from "./Database";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as SQLite from "expo-sqlite";
 
-const db = new Database();
+let db;
 
 export default function App() {
   const SECS = 5;
@@ -33,7 +34,14 @@ export default function App() {
 
   useEffect(() => {
     if (!initialized) {
-      getCardsCount()
+      Database.initialize()
+        .then(() => {
+          sqlite = SQLite.openDatabase("cards2.db");
+          db = new Database(sqlite);
+          console.log("database initialized");
+          return db;
+        })
+        .then((db) => getCardsCount(db))
         .then(retrieveLastCardId)
         .then((cardId) => {
           if (cardId !== null) {
@@ -67,7 +75,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, [timerState, secs]);
 
-  const getCardsCount = () =>
+  const getCardsCount = (db) =>
     db.getCardsCount().then((cardCount) => {
       console.log(`Card count: ${cardCount}`);
       setCardCount(cardCount);

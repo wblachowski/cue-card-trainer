@@ -1,24 +1,37 @@
 import * as FileSystem from "expo-file-system";
-import * as SQLite from "expo-sqlite";
 import { Asset } from "expo-asset";
 
 export default class Database {
-  constructor() {
-    this.db = this.openDatabase();
+  constructor(db) {
+    this.db = db;
   }
 
-  openDatabase() {
-    // if (
-    //   !FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite").exists
-    // ) {
-    //   FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + "SQLite");
-    // }
-    FileSystem.downloadAsync(
+  static initialize = async () => {
+    let dirInfo;
+    try {
+      dirInfo = await FileSystem.getInfoAsync(
+        `${FileSystem.documentDirectory}SQLite`
+      );
+    } catch (err) {
+      console.log(err);
+    }
+
+    if (!dirInfo.exists) {
+      try {
+        await FileSystem.makeDirectoryAsync(
+          `${FileSystem.documentDirectory}SQLite`,
+          { intermediates: true }
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    return FileSystem.downloadAsync(
       Asset.fromModule(require("./assets/cards.db")).uri,
       FileSystem.documentDirectory + "SQLite/cards2.db"
     );
-    return SQLite.openDatabase("cards2.db");
-  }
+  };
 
   getCardsCount = () =>
     new Promise((resolve, reject) =>
