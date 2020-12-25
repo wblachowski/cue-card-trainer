@@ -6,6 +6,7 @@ import {
   Platform,
   StatusBar,
   View,
+  Switch,
 } from "react-native";
 import Card from "./components/Card";
 import BottomNav from "./components/BottomNav";
@@ -22,6 +23,7 @@ export default function App() {
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [cardId, setCardId] = useState(-1);
   const [cardCount, setCardCount] = useState(-1);
+  const [ttsEnabled, setTtsEnabled] = useState(false);
   const [db, setDb] = useState();
 
   storeLastCardId = async () =>
@@ -62,14 +64,17 @@ export default function App() {
   }, [cardId]);
 
   useEffect(() => {
-    if (card) {
+    if (card && ttsEnabled) {
       Speech.stop();
       Speech.speak(card.title);
       Speech.speak(card.prompt);
       Speech.speak(card.bullets?.join(",\n"));
       Speech.speak(card.ending);
     }
-  }, [card]);
+    if (!ttsEnabled) {
+      Speech.stop();
+    }
+  }, [card, ttsEnabled]);
 
   useEffect(() => {
     let interval = null;
@@ -126,6 +131,16 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.settingsView}>
+        <Text style={styles.settingsText}>Text To Speach</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#90CAF9" }}
+          thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={() => setTtsEnabled((prev) => !prev)}
+          value={ttsEnabled}
+        />
+      </View>
       <View style={styles.cardView}>
         <Card card={card} />
       </View>
@@ -158,6 +173,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  settingsView: {
+    flexDirection: "row",
+    position: "absolute",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    right: 30,
+    top: 20,
+  },
+  settingsText: {
+    marginRight: 8,
+    marginTop: 2,
   },
   cardView: {
     position: "absolute",
