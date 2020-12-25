@@ -24,6 +24,7 @@ export default function App() {
   const [cardId, setCardId] = useState(-1);
   const [cardCount, setCardCount] = useState(-1);
   const [ttsEnabled, setTtsEnabled] = useState(false);
+  const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
   const [db, setDb] = useState();
 
   storeLastCardId = async () =>
@@ -70,6 +71,15 @@ export default function App() {
       Speech.speak(card.prompt);
       Speech.speak(card.bullets?.join(",\n"));
       Speech.speak(card.ending);
+      console.log("auto play:", autoPlayEnabled);
+      if (autoPlayEnabled) {
+        Speech.speak("GO!", {
+          onDone: () => {
+            console.log("Reading done!");
+            startTimer();
+          },
+        });
+      }
     }
     if (!ttsEnabled) {
       Speech.stop();
@@ -85,6 +95,15 @@ export default function App() {
     }
     if (secs <= 0) {
       setTimerState(TimerStates.finished);
+    }
+    if (timerState === TimerStates.finished) {
+      Speech.speak("Times up!", {
+        onDone: () => {
+          if (autoPlayEnabled) {
+            nextCard();
+          }
+        },
+      });
     }
     return () => clearInterval(interval);
   }, [timerState, secs]);
@@ -132,15 +151,28 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.settingsView}>
-        <Text style={styles.settingsText}>Text To Speech</Text>
-        <Switch
-          trackColor={{ false: "#767577", true: "#90CAF9" }}
-          thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={() => setTtsEnabled((prev) => !prev)}
-          value={ttsEnabled}
-        />
+        <View style={styles.settingRow}>
+          <Text style={styles.settingsText}>Text To Speech</Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#90CAF9" }}
+            thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => setTtsEnabled((prev) => !prev)}
+            value={ttsEnabled}
+          />
+        </View>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingsText}>Auto-Play</Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#90CAF9" }}
+            thumbColor={autoPlayEnabled ? "#2962FF" : "#ffffff"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => setAutoPlayEnabled((prev) => !prev)}
+            value={autoPlayEnabled}
+          />
+        </View>
       </View>
+
       <View style={styles.cardView}>
         <Card card={card} />
       </View>
@@ -175,11 +207,15 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   settingsView: {
-    flexDirection: "row",
     position: "absolute",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    right: 30,
     top: 20,
+    right: 30,
+    alignItems: "flex-end",
+  },
+  settingRow: {
+    flexDirection: "row",
+    marginBottom: 4,
   },
   settingsText: {
     marginRight: 8,
