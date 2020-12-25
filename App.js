@@ -132,7 +132,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.settingsView}>
-        <Text style={styles.settingsText}>Text To Speach</Text>
+        <Text style={styles.settingsText}>Text To Speech</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#90CAF9" }}
           thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
