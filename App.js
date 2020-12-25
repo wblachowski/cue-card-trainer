@@ -13,6 +13,7 @@ import { TimerStates } from "./Constants";
 import Database from "./Database";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
+import * as Speech from "expo-speech";
 
 export default function App() {
   const SECS = 5;
@@ -59,6 +60,16 @@ export default function App() {
       storeLastCardId();
     }
   }, [cardId]);
+
+  useEffect(() => {
+    if (card) {
+      Speech.stop();
+      Speech.speak(card.title);
+      Speech.speak(card.prompt);
+      Speech.speak(card.bullets?.join(",\n"));
+      Speech.speak(card.ending);
+    }
+  }, [card]);
 
   useEffect(() => {
     let interval = null;
