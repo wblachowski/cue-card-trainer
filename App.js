@@ -1,3 +1,7 @@
+import "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -16,6 +20,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
+
+const Stack = createStackNavigator();
 
 export default function App() {
   const SECS = 5;
@@ -149,54 +155,78 @@ export default function App() {
     }
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.settingsView}>
-        <Button primary text="" icon="settings"></Button>
-        <View style={styles.settingRow}>
-          <Text style={styles.settingsText}>Text To Speech</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#90CAF9" }}
-            thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setTtsEnabled((prev) => !prev)}
-            value={ttsEnabled}
-          />
+  const mainComponent = ({ navigation }) => {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.settingsView}>
+          <Button
+            primary
+            text=""
+            icon="settings"
+            onPress={() => navigation.navigate("Settings")}
+          ></Button>
+          <View style={styles.settingRow}>
+            <Text style={styles.settingsText}>Text To Speech</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#90CAF9" }}
+              thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setTtsEnabled((prev) => !prev)}
+              value={ttsEnabled}
+            />
+          </View>
+          <View style={styles.settingRow}>
+            <Text style={styles.settingsText}>Auto-Play</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#90CAF9" }}
+              thumbColor={autoPlayEnabled ? "#2962FF" : "#ffffff"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setAutoPlayEnabled((prev) => !prev)}
+              value={autoPlayEnabled}
+            />
+          </View>
         </View>
-        <View style={styles.settingRow}>
-          <Text style={styles.settingsText}>Auto-Play</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#90CAF9" }}
-            thumbColor={autoPlayEnabled ? "#2962FF" : "#ffffff"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setAutoPlayEnabled((prev) => !prev)}
-            value={autoPlayEnabled}
-          />
-        </View>
-      </View>
 
-      <View style={styles.cardView}>
-        <Card card={card} />
-      </View>
-      <View style={styles.timerView}>
-        <Text
-          style={{
-            color: timerState === TimerStates.finished ? "red" : "black",
-            fontSize: 64,
-          }}
-        >
-          {timeStr()}
-        </Text>
-      </View>
-      <View style={styles.bottomNav}>
-        <BottomNav
-          prevClicked={prevCard}
-          playClicked={mainButtonAction}
-          nextClicked={nextCard}
-          timerState={timerState}
+        <View style={styles.cardView}>
+          <Card card={card} />
+        </View>
+        <View style={styles.timerView}>
+          <Text
+            style={{
+              color: timerState === TimerStates.finished ? "red" : "black",
+              fontSize: 64,
+            }}
+          >
+            {timeStr()}
+          </Text>
+        </View>
+        <View style={styles.bottomNav}>
+          <BottomNav
+            prevClicked={prevCard}
+            playClicked={mainButtonAction}
+            nextClicked={nextCard}
+            timerState={timerState}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  };
+
+  const settingsComponent = ({ navigation }) => {
+    return <Text>xD</Text>;
+  };
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={mainComponent}
+          options={{ headerShown: false }}
         />
-      </View>
-    </SafeAreaView>
+        <Stack.Screen name="Settings" component={settingsComponent} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
