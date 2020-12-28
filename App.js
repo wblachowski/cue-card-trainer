@@ -15,6 +15,7 @@ import Database from "./Database";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
+import { Button } from "react-native-material-ui";
 
 export default function App() {
   const SECS = 5;
@@ -151,6 +152,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.settingsView}>
+        <Button primary text="" icon="settings"></Button>
         <View style={styles.settingRow}>
           <Text style={styles.settingsText}>Text To Speech</Text>
           <Switch
