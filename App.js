@@ -11,21 +11,16 @@ import {
   StatusBar,
   View,
   Switch,
-  ScrollView,
 } from "react-native";
 import Card from "./components/Card";
 import BottomNav from "./components/BottomNav";
+import Settings from "./components/Setttings";
 import { TimerStates } from "./Constants";
 import Database from "./Database";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
-import {
-  SettingsDividerLong,
-  SettingsEditText,
-  SettingsCategoryHeader,
-} from "react-native-settings-components";
 
 const Stack = createStackNavigator();
 
@@ -218,29 +213,8 @@ export default function App() {
     );
   };
 
-  const settingsComponent = ({ navigation }) => {
-    return (
-      <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: "white",
-        }}
-      >
-        <SettingsCategoryHeader title={"My Account"} />
-        <SettingsDividerLong android={false} />
-        <SettingsEditText
-          title="Username"
-          dialogDescription="Enter your username."
-          valuePlaceholder="..."
-          negativeButtonTitle="Cancel"
-          positiveButtonTitle="Save"
-          onValueChange={(value) => {
-            console.log("username:", value);
-          }}
-          value="john"
-        />
-      </ScrollView>
-    );
+  const settingsComponent = () => {
+    return <Settings />;
   };
 
   return (
