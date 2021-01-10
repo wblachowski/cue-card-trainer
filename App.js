@@ -27,7 +27,8 @@ const Stack = createStackNavigator();
 export default function App() {
   const SECS = 5;
   const [card, setCard] = useState({});
-  const [secs, setSecs] = useState(SECS);
+  const [initialSecs, setInitialSecs] = useState(SECS);
+  const [secs, setSecs] = useState(initialSecs);
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [cardId, setCardId] = useState(-1);
   const [cardCount, setCardCount] = useState(-1);
@@ -42,12 +43,15 @@ export default function App() {
 
   retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
 
+  readAnswerTime = async () => AsyncStorage.getItem("answerTime");
+
   useEffect(() => {
     Database.initialize().then(() => {
       sqlite = SQLite.openDatabase("cards2.db");
       setDb(new Database(sqlite));
       console.log("database initialized");
     });
+    readAnswerTime().then((secs) => setInitialSecs(secs));
   }, []);
 
   useEffect(() => {
@@ -64,7 +68,7 @@ export default function App() {
   }, [db]);
 
   useEffect(() => {
-    setSecs(SECS);
+    setSecs(initialSecs);
     setTimerState(TimerStates.notStarted);
     if (cardId >= 0) {
       fetchData(cardId);
@@ -139,7 +143,7 @@ export default function App() {
   };
 
   const startTimer = () => {
-    setSecs(SECS);
+    setSecs(initialSecs);
     setTimerState(TimerStates.running);
   };
 
