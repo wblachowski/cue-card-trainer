@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, TextInput } from "react-native";
+import { Text, View, TextInput, StyleSheet } from "react-native";
 import SettingsEdit from "./SettingsEdit";
 
 import { DialogComponent, ScaleAnimation } from "react-native-dialog-component";
@@ -30,7 +30,8 @@ export default function Settings() {
             textAlign="center"
             keyboardType="numeric"
             maxLength={2}
-            style={{ width: 40 }}
+            style={styles.timeInputStyle}
+            placeholder="00"
           />
           <Text>:</Text>
           <TextInput
@@ -39,7 +40,8 @@ export default function Settings() {
             underlineColorAndroid="blue"
             textAlign="center"
             keyboardType="numeric"
-            style={{ width: 40 }}
+            style={styles.timeInputStyle}
+            placeholder="00"
           />
         </View>
       </DialogComponent>
@@ -54,3 +56,9 @@ export default function Settings() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  timeInputStyle: {
+    width: 40,
+  },
+});
