@@ -5,7 +5,7 @@ import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 import { useEffect } from "react/cjs/react.development";
 
-export default function Settings() {
+export default function Settings({ onUpdate }) {
   const [timeDialogVisible, setTimeDialogVisible] = useState(false);
   const [minutes, setMinutes] = useState("2");
   const [seconds, setSeconds] = useState("0");
@@ -14,9 +14,11 @@ export default function Settings() {
   const [answerTime, setAnswerTime] = useState(120);
 
   const saveAnswerTime = async (time) =>
-    AsyncStorage.setItem("answerTime", time.toString()).then(() =>
-      console.log(`Saved Answer Time: ${time}`)
-    );
+    AsyncStorage.setItem("answerTime", time.toString())
+      .then(() => {
+        console.log(`Saved Answer Time: ${time}`);
+      })
+      .then(onUpdate);
 
   const readAnswerTime = async () => AsyncStorage.getItem("answerTime");
 

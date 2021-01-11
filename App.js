@@ -45,13 +45,21 @@ export default function App() {
 
   readAnswerTime = async () => AsyncStorage.getItem("answerTime");
 
+  readSettings = async () => {
+    console.log("Reading settings");
+    AsyncStorage.getItem("answerTime").then((secs) => {
+      setInitialSecs(secs);
+      setSecs(secs);
+    });
+  };
+
   useEffect(() => {
     Database.initialize().then(() => {
       sqlite = SQLite.openDatabase("cards2.db");
       setDb(new Database(sqlite));
       console.log("database initialized");
     });
-    readAnswerTime().then((secs) => setInitialSecs(secs));
+    readSettings();
   }, []);
 
   useEffect(() => {
@@ -218,7 +226,7 @@ export default function App() {
   };
 
   const settingsComponent = () => {
-    return <Settings />;
+    return <Settings onUpdate={readSettings} />;
   };
 
   return (
