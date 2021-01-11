@@ -4,6 +4,7 @@ import SettingsEdit from "./SettingsEdit";
 import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 import { useEffect } from "react/cjs/react.development";
+import { SettingsSwitch } from "react-native-settings-components";
 
 export default function Settings({ onUpdate }) {
   const [timeDialogVisible, setTimeDialogVisible] = useState(false);
@@ -11,24 +12,23 @@ export default function Settings({ onUpdate }) {
   const [seconds, setSeconds] = useState("");
   const [minutesPlaceholder, setMinutesPlaceholder] = useState(minutes);
   const [secondsPlaceholder, setSecondsPlaceholder] = useState(seconds);
+  const [preparationTimeEnabled, setPreparationTimeEnabled] = useState(false);
   const [answerTime, setAnswerTime] = useState(120);
 
-  const saveAnswerTime = async (time) =>
-    AsyncStorage.setItem("answerTime", time.toString())
-      .then(() => {
-        console.log(`Saved Answer Time: ${time}`);
-      })
-      .then(onUpdate);
-
-  const readAnswerTime = async () => AsyncStorage.getItem("answerTime");
+  const readSettings = async () => {
+    var items = await AsyncStorage.multiGet([
+      "answerTime",
+      "preparationTimeEnabled",
+    ]);
+    return Object.fromEntries(items);
+  };
 
   useEffect(() => {
-    console.log("useeffect settings");
     const readData = async () =>
-      readAnswerTime().then((secs) => {
-        console.log(secs);
-        secs = secs || 120;
-        setAnswerTime(secs);
+      readSettings().then((settings) => {
+        console.log(settings);
+        setAnswerTime(settings.answerTime || 120);
+        setPreparationTimeEnabled(settings.preparationTimeEnabled === "true");
       });
     readData();
   }, []);
@@ -40,11 +40,19 @@ export default function Settings({ onUpdate }) {
     setSecondsPlaceholder(String(answerTime % 60).padStart(2, "0"));
   }, [answerTime]);
 
+  const savePreparationTime = async (value) => {
+    AsyncStorage.setItem("preparationTimeEnabled", value.toString());
+  };
+
   const saveSettings = () => {
+    console.log(preparationTimeEnabled);
     setTimeDialogVisible(false);
     const time = parseInt(minutes) * 60 + parseInt(seconds);
-    saveAnswerTime(time);
     setAnswerTime(time);
+    AsyncStorage.multiSet([
+      ["answerTime", time.toString()],
+      ["preparationTimeEnabled", preparationTimeEnabled.toString()],
+    ]).then(onUpdate);
   };
 
   return (
@@ -96,6 +104,14 @@ export default function Settings({ onUpdate }) {
           setTimeDialogVisible(true);
         }}
         value={`${minutesPlaceholder}:${secondsPlaceholder}`}
+      />
+      <SettingsSwitch
+        title={"Enable time for preparation"}
+        onValueChange={(value) => {
+          setPreparationTimeEnabled(value);
+          savePreparationTime(value);
+        }}
+        value={preparationTimeEnabled}
       />
     </View>
   );
