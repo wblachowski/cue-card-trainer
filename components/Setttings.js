@@ -7,8 +7,8 @@ import { useEffect } from "react/cjs/react.development";
 
 export default function Settings({ onUpdate }) {
   const [timeDialogVisible, setTimeDialogVisible] = useState(false);
-  const [minutes, setMinutes] = useState("2");
-  const [seconds, setSeconds] = useState("0");
+  const [minutes, setMinutes] = useState("");
+  const [seconds, setSeconds] = useState("");
   const [minutesPlaceholder, setMinutesPlaceholder] = useState(minutes);
   const [secondsPlaceholder, setSecondsPlaceholder] = useState(seconds);
   const [answerTime, setAnswerTime] = useState(120);
@@ -23,27 +23,28 @@ export default function Settings({ onUpdate }) {
   const readAnswerTime = async () => AsyncStorage.getItem("answerTime");
 
   useEffect(() => {
+    console.log("useeffect settings");
     const readData = async () =>
       readAnswerTime().then((secs) => {
         console.log(secs);
         secs = secs || 120;
         setAnswerTime(secs);
-        setMinutes(String(Math.floor(secs / 60)));
-        setSeconds(String(secs % 60));
-        setMinutesPlaceholder(String(Math.floor(secs / 60)));
-        setSecondsPlaceholder(String(secs % 60));
       });
     readData();
   }, []);
 
+  useEffect(() => {
+    setMinutes(String(Math.floor(answerTime / 60)));
+    setSeconds(String(answerTime % 60));
+    setMinutesPlaceholder(String(Math.floor(answerTime / 60)));
+    setSecondsPlaceholder(String(answerTime % 60).padStart(2, "0"));
+  }, [answerTime]);
+
   const saveSettings = () => {
+    setTimeDialogVisible(false);
     const time = parseInt(minutes) * 60 + parseInt(seconds);
-    saveAnswerTime(time).then(() => {
-      setAnswerTime(time);
-      setTimeDialogVisible(false);
-      setMinutesPlaceholder(String(Math.floor(time / 60)));
-      setSecondsPlaceholder(String(time % 60));
-    });
+    saveAnswerTime(time);
+    setAnswerTime(time);
   };
 
   return (
