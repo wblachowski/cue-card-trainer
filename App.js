@@ -176,7 +176,10 @@ export default function App() {
             primary
             text=""
             icon="settings"
-            onPress={() => navigation.navigate("Settings")}
+            onPress={() => {
+              setTimerState(TimerStates.paused);
+              navigation.navigate("Settings");
+            }}
           ></Button>
           <View style={styles.settingRow}>
             <Text style={styles.settingsText}>Text To Speech</Text>
