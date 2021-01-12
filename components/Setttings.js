@@ -5,20 +5,22 @@ import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
+import TimeDialog from "./TimeDialog";
 
 export default function Settings({ onUpdate }) {
-  const [timeDialogVisible, setTimeDialogVisible] = useState(false);
-  const [minutes, setMinutes] = useState("");
-  const [seconds, setSeconds] = useState("");
-  const [minutesPlaceholder, setMinutesPlaceholder] = useState(minutes);
-  const [secondsPlaceholder, setSecondsPlaceholder] = useState(seconds);
-  const [preparationTimeEnabled, setPreparationTimeEnabled] = useState(false);
+  const [answerTimeDialogVisible, setAnswerTimeDialogVisible] = useState(false);
+  const [prepTimeDialogVisible, setPrepTimeDialogVisible] = useState(false);
+  const [answerPlaceholder, setAnswerPlaceholder] = useState(["", ""]);
+  const [prepPlaceholder, setPrepPlaceholder] = useState(["", ""]);
+  const [prepEnabled, setPrepEnabled] = useState(false);
   const [answerTime, setAnswerTime] = useState(120);
+  const [prepTime, setPrepTime] = useState(120);
 
   const readSettings = async () => {
     var items = await AsyncStorage.multiGet([
       "answerTime",
-      "preparationTimeEnabled",
+      "prepEnabled",
+      "prepTime",
     ]);
     return Object.fromEntries(items);
   };
@@ -28,97 +30,86 @@ export default function Settings({ onUpdate }) {
       readSettings().then((settings) => {
         console.log(settings);
         setAnswerTime(settings.answerTime || 120);
-        setPreparationTimeEnabled(settings.preparationTimeEnabled === "true");
+        setPrepEnabled(settings.prepEnabled === "true");
+        setPrepTime(settings.prepTime || 30);
       });
     readData();
   }, []);
 
   useEffect(() => {
-    setMinutes(String(Math.floor(answerTime / 60)));
-    setSeconds(String(answerTime % 60));
-    setMinutesPlaceholder(String(Math.floor(answerTime / 60)));
-    setSecondsPlaceholder(String(answerTime % 60).padStart(2, "0"));
+    var minutes = String(Math.floor(answerTime / 60));
+    var secs = String(answerTime % 60).padStart(2, "0");
+    setAnswerPlaceholder([minutes, secs]);
   }, [answerTime]);
 
-  const savePreparationTime = async (value) => {
-    AsyncStorage.setItem("preparationTimeEnabled", value.toString());
+  useEffect(() => {
+    var minutes = String(Math.floor(prepTime / 60));
+    var secs = String(prepTime % 60).padStart(2, "0");
+    setPrepPlaceholder([minutes, secs]);
+  }, [prepTime]);
+
+  const saveAnswerTime = (secs) => {
+    setAnswerTimeDialogVisible(false);
+    setAnswerTime(secs);
+    AsyncStorage.setItem("answerTime", secs.toString()).then(onUpdate);
   };
 
-  const saveSettings = () => {
-    console.log(preparationTimeEnabled);
-    setTimeDialogVisible(false);
-    const time = parseInt(minutes) * 60 + parseInt(seconds);
-    setAnswerTime(time);
-    AsyncStorage.multiSet([
-      ["answerTime", time.toString()],
-      ["preparationTimeEnabled", preparationTimeEnabled.toString()],
-    ]).then(onUpdate);
+  const savePrepTime = (secs) => {
+    setPrepTimeDialogVisible(false);
+    setPrepTime(secs);
+    AsyncStorage.setItem("prepTime", secs.toString()).then(onUpdate);
+  };
+
+  const savePrepEnabled = (value) => {
+    setPrepEnabled(value);
+    AsyncStorage.setItem("prepEnabled", value.toString()).then(onUpdate);
   };
 
   return (
     <View>
-      <Dialog.Container
-        visible={timeDialogVisible}
-        onBackdropPress={() => setTimeDialogVisible(false)}
-      >
-        <Dialog.Title>Answer time</Dialog.Title>
-        <Dialog.Description>
-          Set the time for answering questions.
-        </Dialog.Description>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-        >
-          <Dialog.Input
-            underlineColorAndroid="blue"
-            style={styles.timeInputStyle}
-            textAlign="center"
-            keyboardType="numeric"
-            maxLength={2}
-            placeholder={minutesPlaceholder}
-            onChangeText={(text) => setMinutes(text)}
-          />
-          <Text style={{ position: "absolute", bottom: 30 }}>:</Text>
-          <Dialog.Input
-            underlineColorAndroid="blue"
-            style={styles.timeInputStyle}
-            textAlign="center"
-            keyboardType="numeric"
-            maxLength={2}
-            placeholder={secondsPlaceholder}
-            onChangeText={(text) => setSeconds(text)}
-          />
-        </View>
-        <Dialog.Button
-          label="Cancel"
-          onPress={() => setTimeDialogVisible(false)}
-        />
-        <Dialog.Button label="Save" onPress={() => saveSettings()} />
-      </Dialog.Container>
+      <TimeDialog
+        title="Answer time"
+        description="Set the time for answering questions."
+        visible={answerTimeDialogVisible}
+        initMinutes={answerPlaceholder[0]}
+        initSeconds={answerPlaceholder[1]}
+        onClose={() => setAnswerTimeDialogVisible(false)}
+        onSave={(secs) => saveAnswerTime(secs)}
+      />
+      <TimeDialog
+        title="Preparation time"
+        description="Set the time for preparing before answering questions."
+        visible={prepTimeDialogVisible}
+        initMinutes={prepPlaceholder[0]}
+        initSeconds={prepPlaceholder[1]}
+        onClose={() => setPrepTimeDialogVisible(false)}
+        onSave={(secs) => savePrepTime(secs)}
+      />
       <SettingsEdit
         title="Answer time"
         valuePlaceholder="..."
         onPress={() => {
-          setTimeDialogVisible(true);
+          setAnswerTimeDialogVisible(true);
         }}
-        value={`${minutesPlaceholder}:${secondsPlaceholder}`}
+        value={`${answerPlaceholder[0]}:${answerPlaceholder[1]}`}
       />
       <SettingsSwitch
         title={"Enable time for preparation"}
         onValueChange={(value) => {
-          setPreparationTimeEnabled(value);
-          savePreparationTime(value);
+          savePrepEnabled(value);
         }}
-        value={preparationTimeEnabled}
+        value={prepEnabled}
       />
+      {prepEnabled && (
+        <SettingsEdit
+          title="Preparation Time"
+          valuePlaceholder="..."
+          onPress={() => {
+            setPrepTimeDialogVisible(true);
+          }}
+          value={`${prepPlaceholder[0]}:${prepPlaceholder[1]}`}
+        />
+      )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  timeInputStyle: {
-    width: 40,
-  },
-});
