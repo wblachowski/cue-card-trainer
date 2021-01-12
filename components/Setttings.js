@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, StyleSheet } from "react-native";
+import { View } from "react-native";
 import SettingsEdit from "./SettingsEdit";
-import Dialog from "react-native-dialog";
 import AsyncStorage from "@react-native-community/async-storage";
 import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
