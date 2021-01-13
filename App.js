@@ -21,7 +21,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
-import { useIsFocused } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
