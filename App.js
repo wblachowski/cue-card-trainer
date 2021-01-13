@@ -21,154 +21,162 @@ import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
+import { useIsFocused } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const SECS = 5;
-  const [card, setCard] = useState({});
-  const [initialSecs, setInitialSecs] = useState(SECS);
-  const [secs, setSecs] = useState(initialSecs);
-  const [timerState, setTimerState] = useState(TimerStates.notStarted);
-  const [cardId, setCardId] = useState(-1);
-  const [cardCount, setCardCount] = useState(-1);
-  const [ttsEnabled, setTtsEnabled] = useState(false);
-  const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
-  const [db, setDb] = useState();
+  const mainComponent = ({ navigation }) => {
+    const SECS = 5;
+    const [card, setCard] = useState({});
+    const [initialSecs, setInitialSecs] = useState(SECS);
+    const [secs, setSecs] = useState(initialSecs);
+    const [timerState, setTimerState] = useState(TimerStates.notStarted);
+    const [cardId, setCardId] = useState(-1);
+    const [cardCount, setCardCount] = useState(-1);
+    const [ttsEnabled, setTtsEnabled] = useState(false);
+    const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
+    const [db, setDb] = useState();
+    storeLastCardId = async () =>
+      AsyncStorage.setItem("lastCardId", cardId.toString()).then((xd) =>
+        console.log(`Saved: ${cardId}`)
+      );
 
-  storeLastCardId = async () =>
-    AsyncStorage.setItem("lastCardId", cardId.toString()).then((xd) =>
-      console.log(`Saved: ${cardId}`)
-    );
+    retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
 
-  retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
+    readAnswerTime = async () => AsyncStorage.getItem("answerTime");
 
-  readAnswerTime = async () => AsyncStorage.getItem("answerTime");
+    readSettings = async () => {
+      console.log("Reading settings");
+      AsyncStorage.getItem("answerTime").then((secs) => {
+        setInitialSecs(secs);
+        setSecs(secs);
+      });
+    };
 
-  readSettings = async () => {
-    console.log("Reading settings");
-    AsyncStorage.getItem("answerTime").then((secs) => {
-      setInitialSecs(secs);
-      setSecs(secs);
-    });
-  };
+    useEffect(() => {
+      Database.initialize().then(() => {
+        sqlite = SQLite.openDatabase("cards2.db");
+        setDb(new Database(sqlite));
+        console.log("database initialized");
+      });
+      console.log("in empty use effect");
+      readSettings();
+    }, []);
 
-  useEffect(() => {
-    Database.initialize().then(() => {
-      sqlite = SQLite.openDatabase("cards2.db");
-      setDb(new Database(sqlite));
-      console.log("database initialized");
-    });
-    readSettings();
-  }, []);
+    useEffect(() => {
+      if (db) {
+        getCardsCount()
+          .then(retrieveLastCardId)
+          .then((lastCardId) => {
+            if (lastCardId != null) {
+              console.log(`Retrieved: ${lastCardId}`);
+              setCardId(parseInt(lastCardId));
+            }
+          });
+      }
+    }, [db]);
 
-  useEffect(() => {
-    if (db) {
-      getCardsCount()
-        .then(retrieveLastCardId)
-        .then((lastCardId) => {
-          if (lastCardId != null) {
-            console.log(`Retrieved: ${lastCardId}`);
-            setCardId(parseInt(lastCardId));
-          }
-        });
-    }
-  }, [db]);
+    useEffect(() => {
+      setSecs(initialSecs);
+      setTimerState(TimerStates.notStarted);
+      if (cardId >= 0) {
+        fetchData(cardId);
+        storeLastCardId();
+      }
+    }, [cardId]);
 
-  useEffect(() => {
-    setSecs(initialSecs);
-    setTimerState(TimerStates.notStarted);
-    if (cardId >= 0) {
-      fetchData(cardId);
-      storeLastCardId();
-    }
-  }, [cardId]);
+    useEffect(() => {
+      if (card && ttsEnabled) {
+        Speech.stop();
+        Speech.speak(card.title);
+        Speech.speak(card.prompt);
+        Speech.speak(card.bullets?.join(",\n"));
+        Speech.speak(card.ending);
+        console.log("auto play:", autoPlayEnabled);
+        if (autoPlayEnabled) {
+          Speech.speak("GO!", {
+            onDone: () => {
+              console.log("Reading done!");
+              startTimer();
+            },
+          });
+        }
+      }
+      if (!ttsEnabled) {
+        Speech.stop();
+      }
+    }, [card, ttsEnabled]);
 
-  useEffect(() => {
-    if (card && ttsEnabled) {
-      Speech.stop();
-      Speech.speak(card.title);
-      Speech.speak(card.prompt);
-      Speech.speak(card.bullets?.join(",\n"));
-      Speech.speak(card.ending);
-      console.log("auto play:", autoPlayEnabled);
-      if (autoPlayEnabled) {
-        Speech.speak("GO!", {
+    useEffect(() => {
+      let interval = null;
+      if (timerState === TimerStates.running) {
+        interval = setInterval(() => {
+          setSecs((secs) => secs - 1);
+        }, 1000);
+      }
+      if (secs <= 0) {
+        setTimerState(TimerStates.finished);
+      }
+      if (timerState === TimerStates.finished) {
+        Speech.speak("Times up!", {
           onDone: () => {
-            console.log("Reading done!");
-            startTimer();
+            if (autoPlayEnabled) {
+              nextCard();
+            }
           },
         });
       }
-    }
-    if (!ttsEnabled) {
-      Speech.stop();
-    }
-  }, [card, ttsEnabled]);
+      return () => clearInterval(interval);
+    }, [timerState, secs]);
 
-  useEffect(() => {
-    let interval = null;
-    if (timerState === TimerStates.running) {
-      interval = setInterval(() => {
-        setSecs((secs) => secs - 1);
-      }, 1000);
-    }
-    if (secs <= 0) {
-      setTimerState(TimerStates.finished);
-    }
-    if (timerState === TimerStates.finished) {
-      Speech.speak("Times up!", {
-        onDone: () => {
-          if (autoPlayEnabled) {
-            nextCard();
-          }
-        },
+    const getCardsCount = () =>
+      db.getCardsCount().then((cardCount) => {
+        console.log(`Card count: ${cardCount}`);
+        setCardCount(cardCount);
       });
-    }
-    return () => clearInterval(interval);
-  }, [timerState, secs]);
 
-  const getCardsCount = () =>
-    db.getCardsCount().then((cardCount) => {
-      console.log(`Card count: ${cardCount}`);
-      setCardCount(cardCount);
-    });
+    const fetchData = (cardId) =>
+      db.fetchData(cardId).then((card) => {
+        console.log(`Displaying: ${cardId}`);
+        setCard(card);
+      });
 
-  const fetchData = (cardId) =>
-    db.fetchData(cardId).then((card) => {
-      console.log(`Displaying: ${cardId}`);
-      setCard(card);
-    });
+    const nextCard = () =>
+      setCardId((prev) => (prev + 1 >= cardCount ? 0 : prev + 1));
 
-  const nextCard = () =>
-    setCardId((prev) => (prev + 1 >= cardCount ? 0 : prev + 1));
+    const prevCard = () =>
+      setCardId((prev) => (prev - 1 < 0 ? cardCount - 1 : prev - 1));
 
-  const prevCard = () =>
-    setCardId((prev) => (prev - 1 < 0 ? cardCount - 1 : prev - 1));
+    const timeStr = () => {
+      return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+    };
 
-  const timeStr = () => {
-    return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
-  };
-
-  const startTimer = () => {
-    setSecs(initialSecs);
-    setTimerState(TimerStates.running);
-  };
-
-  const mainButtonAction = () => {
-    if (timerState === TimerStates.running) {
-      setTimerState(TimerStates.paused);
-    } else if (
-      timerState === TimerStates.notStarted ||
-      timerState === TimerStates.finished
-    ) {
-      startTimer();
-    } else if (timerState === TimerStates.paused) {
+    const startTimer = () => {
+      setSecs(initialSecs);
       setTimerState(TimerStates.running);
-    }
-  };
+    };
 
-  const mainComponent = ({ navigation }) => {
+    const mainButtonAction = () => {
+      if (timerState === TimerStates.running) {
+        setTimerState(TimerStates.paused);
+      } else if (
+        timerState === TimerStates.notStarted ||
+        timerState === TimerStates.finished
+      ) {
+        startTimer();
+      } else if (timerState === TimerStates.paused) {
+        setTimerState(TimerStates.running);
+      }
+    };
+    useEffect(() => {
+      const unsubscribe = navigation.addListener("focus", () => {
+        readSettings();
+      });
+
+      return unsubscribe;
+    }, [navigation]);
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.settingsView}>
@@ -229,7 +237,7 @@ export default function App() {
   };
 
   const settingsComponent = () => {
-    return <Settings onUpdate={readSettings} />;
+    return <Settings />;
   };
 
   return (

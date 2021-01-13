@@ -6,14 +6,14 @@ import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
 import TimeDialog from "./TimeDialog";
 
-export default function Settings({ onUpdate }) {
+export default function Settings() {
   const [answerTimeDialogVisible, setAnswerTimeDialogVisible] = useState(false);
   const [prepTimeDialogVisible, setPrepTimeDialogVisible] = useState(false);
   const [answerPlaceholder, setAnswerPlaceholder] = useState(["", ""]);
   const [prepPlaceholder, setPrepPlaceholder] = useState(["", ""]);
   const [prepEnabled, setPrepEnabled] = useState(false);
-  const [answerTime, setAnswerTime] = useState(120);
-  const [prepTime, setPrepTime] = useState(120);
+  const [answerTime, setAnswerTime] = useState(0);
+  const [prepTime, setPrepTime] = useState(0);
 
   const readSettings = async () => {
     var items = await AsyncStorage.multiGet([
@@ -25,14 +25,13 @@ export default function Settings({ onUpdate }) {
   };
 
   useEffect(() => {
-    const readData = async () =>
-      readSettings().then((settings) => {
-        console.log(settings);
-        setAnswerTime(settings.answerTime || 120);
-        setPrepEnabled(settings.prepEnabled === "true");
-        setPrepTime(settings.prepTime || 30);
-      });
-    readData();
+    readSettings().then((settings) => {
+      console.log(settings);
+      setAnswerTime(settings.answerTime || 120);
+      setPrepEnabled(settings.prepEnabled === "true");
+      setPrepTime(settings.prepTime || 30);
+    });
+    console.log("INIT SETTINGS COMPONENT!");
   }, []);
 
   useEffect(() => {
@@ -50,18 +49,18 @@ export default function Settings({ onUpdate }) {
   const saveAnswerTime = (secs) => {
     setAnswerTimeDialogVisible(false);
     setAnswerTime(secs);
-    AsyncStorage.setItem("answerTime", secs.toString()).then(onUpdate);
+    AsyncStorage.setItem("answerTime", secs.toString());
   };
 
   const savePrepTime = (secs) => {
     setPrepTimeDialogVisible(false);
     setPrepTime(secs);
-    AsyncStorage.setItem("prepTime", secs.toString()).then(onUpdate);
+    AsyncStorage.setItem("prepTime", secs.toString());
   };
 
   const savePrepEnabled = (value) => {
     setPrepEnabled(value);
-    AsyncStorage.setItem("prepEnabled", value.toString()).then(onUpdate);
+    AsyncStorage.setItem("prepEnabled", value.toString());
   };
 
   return (
