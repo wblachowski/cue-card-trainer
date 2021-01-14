@@ -63,16 +63,13 @@ export default function App() {
         setPrepEnabled(settings.prepEnabled);
         if (settings.prepEnabled === "true") {
           setTimerType(TimerTypes.prep);
+          setSecs(settings.prepTime);
         } else {
           setTimerType(TimerTypes.answer);
-        }
-        setInitialPrepSecs(parseInt(settings.prepTime));
-        setInitialSecs(parseInt(settings.answerTime));
-        if (timerType === TimerTypes.answer) {
           setSecs(settings.answerTime);
-        } else {
-          setSecs(settings.prepTime);
         }
+        setInitialSecs(parseInt(settings.answerTime));
+        setInitialPrepSecs(parseInt(settings.prepTime));
       });
     };
 
@@ -108,7 +105,13 @@ export default function App() {
     }, [db]);
 
     useEffect(() => {
-      setSecs(initialSecs);
+      if (prepEnabled) {
+        setSecs(initialPrepSecs);
+        setTimerType(TimerTypes.prep);
+      } else {
+        setSecs(initialSecs);
+        setTimerType(TimerTypes.answer);
+      }
       setTimerState(TimerStates.notStarted);
       if (cardId >= 0) {
         fetchData(cardId);
