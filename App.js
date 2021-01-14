@@ -60,6 +60,9 @@ export default function App() {
       };
       read().then((settings) => {
         console.log("setts", settings);
+        settings.prepEnabled = settings.prepEnabled ?? false;
+        settings.answerTime = settings.answerTime ?? 120;
+        settings.prepTime = settings.prepTime ?? 30;
         setPrepEnabled(settings.prepEnabled);
         if (settings.prepEnabled === "true") {
           setTimerType(TimerTypes.prep);

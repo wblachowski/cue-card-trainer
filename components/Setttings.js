@@ -28,9 +28,9 @@ export default function Settings() {
   useEffect(() => {
     readSettings().then((settings) => {
       console.log(settings);
-      setAnswerTime(settings.answerTime || 120);
+      setAnswerTime(settings.answerTime ?? 120);
       setPrepEnabled(settings.prepEnabled === "true");
-      setPrepTime(settings.prepTime || 30);
+      setPrepTime(settings.prepTime ?? 30);
       setInitialized(true);
     });
     console.log("INIT SETTINGS COMPONENT!");
