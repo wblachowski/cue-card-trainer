@@ -15,7 +15,7 @@ import {
 import Card from "./components/Card";
 import BottomNav from "./components/BottomNav";
 import Settings from "./components/Setttings";
-import { TimerStates } from "./Constants";
+import { TimerStates, TimerTypes } from "./Constants";
 import Database from "./Database";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
@@ -29,8 +29,11 @@ export default function App() {
     const SECS = 5;
     const [card, setCard] = useState({});
     const [initialSecs, setInitialSecs] = useState(SECS);
+    const [initialPrepSecs, setInitialPrepSecs] = useState(SECS);
     const [secs, setSecs] = useState(initialSecs);
+    const [prepEnabled, setPrepEnabled] = useState(false);
     const [timerState, setTimerState] = useState(TimerStates.notStarted);
+    const [timerType, setTimerType] = useState(TimerTypes.none);
     const [cardId, setCardId] = useState(-1);
     const [cardCount, setCardCount] = useState(-1);
     const [ttsEnabled, setTtsEnabled] = useState(false);
@@ -47,11 +50,39 @@ export default function App() {
 
     readSettings = async () => {
       console.log("Reading settings");
-      AsyncStorage.getItem("answerTime").then((secs) => {
-        setInitialSecs(secs);
-        setSecs(secs);
+      const read = async () => {
+        var items = await AsyncStorage.multiGet([
+          "answerTime",
+          "prepEnabled",
+          "prepTime",
+        ]);
+        return Object.fromEntries(items);
+      };
+      read().then((settings) => {
+        console.log("setts", settings);
+        setPrepEnabled(settings.prepEnabled);
+        if (settings.prepEnabled === "true") {
+          setTimerType(TimerTypes.prep);
+        } else {
+          setTimerType(TimerTypes.answer);
+        }
+        setInitialPrepSecs(parseInt(settings.prepTime));
+        setInitialSecs(parseInt(settings.answerTime));
+        if (timerType === TimerTypes.answer) {
+          setSecs(settings.answerTime);
+        } else {
+          setSecs(settings.prepTime);
+        }
       });
     };
+
+    useEffect(() => {
+      if (timerType === TimerTypes.answer) {
+        setSecs(initialSecs);
+      } else {
+        setSecs(initialPrepSecs);
+      }
+    }, [timerType]);
 
     useEffect(() => {
       Database.initialize().then(() => {
@@ -114,8 +145,11 @@ export default function App() {
           setSecs((secs) => secs - 1);
         }, 1000);
       }
-      if (secs <= 0) {
+      if (secs <= 0 && timerType === TimerTypes.answer) {
         setTimerState(TimerStates.finished);
+      }
+      if (secs < 0 && timerType === TimerTypes.prep) {
+        setTimerType(TimerTypes.answer);
       }
       if (timerState === TimerStates.finished) {
         Speech.speak("Times up!", {
@@ -148,11 +182,17 @@ export default function App() {
       setCardId((prev) => (prev - 1 < 0 ? cardCount - 1 : prev - 1));
 
     const timeStr = () => {
-      return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+      var t = secs >= 0 ? secs : 0;
+      return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
     };
 
     const startTimer = () => {
-      setSecs(initialSecs);
+      if (prepEnabled) {
+        setTimerType(TimerTypes.prep);
+        setSecs(initialPrepSecs);
+      } else {
+        setSecs(initialSecs);
+      }
       setTimerState(TimerStates.running);
     };
 
@@ -214,6 +254,9 @@ export default function App() {
           <Card card={card} />
         </View>
         <View style={styles.timerView}>
+          <Text>
+            {timerType === TimerTypes.prep ? "preparation" : "answer"}
+          </Text>
           <Text
             style={{
               color: timerState === TimerStates.finished ? "red" : "black",

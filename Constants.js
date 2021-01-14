@@ -4,3 +4,9 @@ export const TimerStates = Object.freeze({
   paused: {},
   finished: {},
 });
+
+export const TimerTypes = Object.freeze({
+  none: {},
+  prep: {},
+  answer: {},
+});
