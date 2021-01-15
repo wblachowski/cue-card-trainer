@@ -71,6 +71,9 @@ export default function App() {
           setTimerType(TimerTypes.answer);
           setSecs(settings.answerTime);
         }
+        if (timerState === TimerStates.finished) {
+          setTimerState(TimerStates.notStarted);
+        }
         setInitialSecs(parseInt(settings.answerTime));
         setInitialPrepSecs(parseInt(settings.prepTime));
       });
