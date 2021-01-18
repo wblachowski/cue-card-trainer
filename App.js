@@ -131,7 +131,6 @@ export default function App() {
         Speech.speak(card.prompt);
         Speech.speak(card.bullets?.join(",\n"));
         Speech.speak(card.ending);
-        console.log("auto play:", autoPlayEnabled);
         Speech.speak("GO!", {
           onDone: () => {
             console.log("Reading done!");
@@ -160,7 +159,7 @@ export default function App() {
       if (timerState === TimerStates.finished) {
         Speech.speak("Times up!", {
           onDone: () => {
-            if (autoPlayEnabled) {
+            if (carModeEnabled) {
               nextCard();
             }
           },
