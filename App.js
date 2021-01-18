@@ -131,7 +131,8 @@ export default function App() {
         Speech.speak(card.prompt);
         Speech.speak(card.bullets?.join(",\n"));
         Speech.speak(card.ending);
-        Speech.speak("GO!", {
+        var prompt = timerType === TimerTypes.prep ? "Prepare" : "Answer";
+        Speech.speak(prompt, {
           onDone: () => {
             console.log("Reading done!");
             startTimer();
@@ -154,6 +155,13 @@ export default function App() {
         setTimerState(TimerStates.finished);
       }
       if (secs < 0 && timerType === TimerTypes.prep) {
+        if (carModeEnabled) {
+          Speech.speak("Answer", {
+            onDone: () => {
+              setTimerType(TimerTypes.answer);
+            },
+          });
+        }
         setTimerType(TimerTypes.answer);
       }
       if (timerState === TimerStates.finished && carModeEnabled) {
