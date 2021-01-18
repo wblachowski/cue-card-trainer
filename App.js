@@ -156,12 +156,10 @@ export default function App() {
       if (secs < 0 && timerType === TimerTypes.prep) {
         setTimerType(TimerTypes.answer);
       }
-      if (timerState === TimerStates.finished) {
-        Speech.speak("Times up!", {
+      if (timerState === TimerStates.finished && carModeEnabled) {
+        Speech.speak("Time's up!", {
           onDone: () => {
-            if (carModeEnabled) {
-              nextCard();
-            }
+            nextCard();
           },
         });
       }
