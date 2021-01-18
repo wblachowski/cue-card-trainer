@@ -36,8 +36,7 @@ export default function App() {
     const [timerType, setTimerType] = useState(TimerTypes.none);
     const [cardId, setCardId] = useState(-1);
     const [cardCount, setCardCount] = useState(-1);
-    const [ttsEnabled, setTtsEnabled] = useState(false);
-    const [autoPlayEnabled, setAutoPlayEnabled] = useState(false);
+    const [carModeEnabled, setCarModeEnabled] = useState(false);
     const [db, setDb] = useState();
     storeLastCardId = async () =>
       AsyncStorage.setItem("lastCardId", cardId.toString()).then((xd) =>
@@ -126,26 +125,24 @@ export default function App() {
     }, [cardId]);
 
     useEffect(() => {
-      if (card && ttsEnabled) {
+      if (card && carModeEnabled) {
         Speech.stop();
         Speech.speak(card.title);
         Speech.speak(card.prompt);
         Speech.speak(card.bullets?.join(",\n"));
         Speech.speak(card.ending);
         console.log("auto play:", autoPlayEnabled);
-        if (autoPlayEnabled) {
-          Speech.speak("GO!", {
-            onDone: () => {
-              console.log("Reading done!");
-              startTimer();
-            },
-          });
-        }
+        Speech.speak("GO!", {
+          onDone: () => {
+            console.log("Reading done!");
+            startTimer();
+          },
+        });
       }
-      if (!ttsEnabled) {
+      if (!carModeEnabled) {
         Speech.stop();
       }
-    }, [card, ttsEnabled]);
+    }, [card, carModeEnabled]);
 
     useEffect(() => {
       let interval = null;
@@ -238,23 +235,13 @@ export default function App() {
             }}
           ></Button>
           <View style={styles.settingRow}>
-            <Text style={styles.settingsText}>Text To Speech</Text>
+            <Text style={styles.settingsText}>Car mode</Text>
             <Switch
               trackColor={{ false: "#767577", true: "#90CAF9" }}
-              thumbColor={ttsEnabled ? "#2962FF" : "#ffffff"}
+              thumbColor={carModeEnabled ? "#2962FF" : "#ffffff"}
               ios_backgroundColor="#3e3e3e"
-              onValueChange={() => setTtsEnabled((prev) => !prev)}
-              value={ttsEnabled}
-            />
-          </View>
-          <View style={styles.settingRow}>
-            <Text style={styles.settingsText}>Auto-Play</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#90CAF9" }}
-              thumbColor={autoPlayEnabled ? "#2962FF" : "#ffffff"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() => setAutoPlayEnabled((prev) => !prev)}
-              value={autoPlayEnabled}
+              onValueChange={() => setCarModeEnabled((prev) => !prev)}
+              value={carModeEnabled}
             />
           </View>
         </View>
