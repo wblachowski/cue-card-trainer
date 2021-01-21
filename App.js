@@ -21,6 +21,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
+import BackgroundTimer from "react-native-background-timer";
 
 const Stack = createStackNavigator();
 
@@ -147,7 +148,7 @@ export default function App() {
     useEffect(() => {
       let interval = null;
       if (timerState === TimerStates.running) {
-        interval = setInterval(() => {
+        interval = BackgroundTimer.setInterval(() => {
           setSecs((secs) => secs - 1);
         }, 1000);
       }
@@ -171,7 +172,7 @@ export default function App() {
           },
         });
       }
-      return () => clearInterval(interval);
+      return () => BackgroundTimer.clearInterval(interval);
     }, [timerState, secs]);
 
     const getCardsCount = () =>
