@@ -22,6 +22,11 @@ import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
 import BackgroundTimer from "react-native-background-timer";
+import {
+  DynamicStyleSheet,
+  DynamicValue,
+  useDynamicStyleSheet,
+} from "react-native-dark-mode";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +44,8 @@ export default function App() {
     const [cardCount, setCardCount] = useState(-1);
     const [carModeEnabled, setCarModeEnabled] = useState(false);
     const [db, setDb] = useState();
+    const styles = useDynamicStyleSheet(dynamicStyles);
+
     storeLastCardId = async () =>
       AsyncStorage.setItem("lastCardId", cardId.toString()).then((xd) =>
         console.log(`Saved: ${cardId}`)
@@ -298,12 +305,13 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
+const dynamicStyles = new DynamicStyleSheet({
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: new DynamicValue("white", "black"),
+    color: "white",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   settingsView: {
@@ -320,6 +328,7 @@ const styles = StyleSheet.create({
   settingsText: {
     marginRight: 8,
     marginTop: 2,
+    color: new DynamicValue("black", "white"),
   },
   cardView: {
     position: "absolute",
