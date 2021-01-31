@@ -5,8 +5,11 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
 import TimeDialog from "./TimeDialog";
+import { useDarkMode } from "react-native-dark-mode";
 
 export default function Settings() {
+  const isDarkMode = useDarkMode();
+
   const [answerTimeDialogVisible, setAnswerTimeDialogVisible] = useState(false);
   const [prepTimeDialogVisible, setPrepTimeDialogVisible] = useState(false);
   const [answerPlaceholder, setAnswerPlaceholder] = useState(["", ""]);
@@ -66,7 +69,12 @@ export default function Settings() {
   };
 
   return (
-    <View>
+    <View
+      style={{
+        backgroundColor: isDarkMode ? "black" : "white",
+        height: "100%",
+      }}
+    >
       {initialized && (
         <>
           <TimeDialog
@@ -101,6 +109,8 @@ export default function Settings() {
               savePrepEnabled(value);
             }}
             value={prepEnabled}
+            containerStyle={{ backgroundColor: isDarkMode ? "black" : "white" }}
+            titleStyle={{ color: isDarkMode ? "white" : "black" }}
           />
         </>
       )}

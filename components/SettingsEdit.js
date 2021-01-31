@@ -1,5 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  DynamicStyleSheet,
+  DynamicValue,
+  useDynamicStyleSheet,
+} from "react-native-dark-mode";
 
 export default function SettingsEdit({
   title,
@@ -7,6 +12,8 @@ export default function SettingsEdit({
   value,
   onPress,
 }) {
+  const styles = useDynamicStyleSheet(dynamicStyles);
+
   return (
     <TouchableOpacity onPress={() => onPress()}>
       <View style={styles.containerStyle}>
@@ -21,19 +28,20 @@ export default function SettingsEdit({
   );
 }
 
-const styles = StyleSheet.create({
+const dynamicStyles = new DynamicStyleSheet({
   containerStyle: {
     padding: 0,
     minHeight: 50,
-    backgroundColor: "white",
     alignItems: "center",
     flexDirection: "row",
+    backgroundColor: new DynamicValue("white", "black"),
   },
   titleStyle: {
     flex: 1,
     paddingLeft: 16,
     paddingRight: 8,
     fontSize: 16,
+    color: new DynamicValue("black", "white"),
   },
   valueStyle: {
     color: "rgb(160,160,160)",

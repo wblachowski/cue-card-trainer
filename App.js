@@ -1,10 +1,13 @@
 import "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   SafeAreaView,
   Platform,
@@ -27,6 +30,7 @@ import {
   DynamicValue,
   useDynamicStyleSheet,
 } from "react-native-dark-mode";
+import { useDarkMode } from "react-native-dark-mode";
 
 const Stack = createStackNavigator();
 
@@ -290,9 +294,10 @@ export default function App() {
   const settingsComponent = () => {
     return <Settings />;
   };
+  const isDarkMode = useDarkMode();
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
