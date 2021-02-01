@@ -6,6 +6,7 @@ import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
 import TimeDialog from "../components/TimeDialog";
 import { useDarkMode } from "react-native-dark-mode";
+import { readSettings as readSettingsFromStorage } from "../utils/Storage";
 
 export default function Settings() {
   const isDarkMode = useDarkMode();
@@ -19,21 +20,12 @@ export default function Settings() {
   const [prepTime, setPrepTime] = useState(0);
   const [initialized, setInitialized] = useState(false);
 
-  const readSettings = async () => {
-    var items = await AsyncStorage.multiGet([
-      "answerTime",
-      "prepEnabled",
-      "prepTime",
-    ]);
-    return Object.fromEntries(items);
-  };
-
   useEffect(() => {
-    readSettings().then((settings) => {
+    readSettingsFromStorage().then((settings) => {
       console.log(settings);
-      setAnswerTime(settings.answerTime ?? 120);
-      setPrepEnabled(settings.prepEnabled === "true");
-      setPrepTime(settings.prepTime ?? 30);
+      setAnswerTime(settings.answerTime);
+      setPrepEnabled(settings.prepEnabled);
+      setPrepTime(settings.prepTime);
       setInitialized(true);
     });
     console.log("INIT SETTINGS COMPONENT!");
