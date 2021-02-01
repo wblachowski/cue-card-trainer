@@ -9,6 +9,7 @@ import {
   readSettings as readSettingsFromStorage,
   saveSetting,
 } from "../utils/Storage";
+import { secsToMinSecStr } from "../utils/TimeHelpers";
 
 export default function Settings() {
   const isDarkMode = useDarkMode();
@@ -34,15 +35,11 @@ export default function Settings() {
   }, []);
 
   useEffect(() => {
-    var minutes = String(Math.floor(answerTime / 60));
-    var secs = String(answerTime % 60).padStart(2, "0");
-    setAnswerPlaceholder([minutes, secs]);
+    setAnswerPlaceholder(secsToMinSecStr(answerTime));
   }, [answerTime]);
 
   useEffect(() => {
-    var minutes = String(Math.floor(prepTime / 60));
-    var secs = String(prepTime % 60).padStart(2, "0");
-    setPrepPlaceholder([minutes, secs]);
+    setPrepPlaceholder(secsToMinSecStr(prepTime));
   }, [prepTime]);
 
   const saveAnswerTime = (secs) => {

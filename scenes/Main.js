@@ -26,7 +26,7 @@ import {
   retrieveLastCardId,
   readSettings as readSettingsFromStorage,
 } from "../utils/Storage";
-import { timeStr } from "../utils/TimeHelpers";
+import { secsToStr } from "../utils/TimeHelpers";
 
 export default function Main({ navigation }) {
   const [card, setCard] = useState({});
@@ -229,7 +229,7 @@ export default function Main({ navigation }) {
             fontSize: 64,
           }}
         >
-          {timeStr(secs)}
+          {secsToStr(secs)}
         </Text>
       </View>
       <View style={styles.bottomNav}>
