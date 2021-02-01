@@ -31,7 +31,6 @@ export default function Settings() {
       setPrepTime(settings.prepTime);
       setInitialized(true);
     });
-    console.log("INIT SETTINGS COMPONENT!");
   }, []);
 
   useEffect(() => {
