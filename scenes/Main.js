@@ -62,7 +62,7 @@ export default function Main({ navigation }) {
       settings.prepEnabled = settings.prepEnabled ?? false;
       settings.answerTime = settings.answerTime ?? 120;
       settings.prepTime = settings.prepTime ?? 30;
-      setPrepEnabled(settings.prepEnabled);
+      setPrepEnabled(settings.prepEnabled === "true");
       if (settings.prepEnabled === "true") {
         setTimerType(TimerTypes.prep);
         setSecs(settings.prepTime);
