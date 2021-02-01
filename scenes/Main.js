@@ -12,7 +12,6 @@ import Card from "../components/Card";
 import BottomNav from "../components/BottomNav";
 import { TimerStates, TimerTypes } from "../Constants";
 import Database from "../Database";
-import AsyncStorage from "@react-native-community/async-storage";
 import * as SQLite from "expo-sqlite";
 import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
