@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import SettingsEdit from "./SettingsEdit";
+import SettingsEdit from "../components/SettingsEdit";
 import AsyncStorage from "@react-native-community/async-storage";
 import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
-import TimeDialog from "./TimeDialog";
+import TimeDialog from "../components/TimeDialog";
 import { useDarkMode } from "react-native-dark-mode";
 
 export default function Settings() {

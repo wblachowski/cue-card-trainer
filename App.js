@@ -1,5 +1,4 @@
 import React from "react";
-import "react-native-gesture-handler";
 import {
   NavigationContainer,
   DarkTheme,
@@ -8,14 +7,11 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import { useDarkMode } from "react-native-dark-mode";
 import Main from "./scenes/Main";
-import Settings from "./components/Setttings";
+import Settings from "./scenes/Setttings";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const settingsComponent = () => {
-    return <Settings />;
-  };
   const isDarkMode = useDarkMode();
 
   return (
@@ -26,7 +22,7 @@ export default function App() {
           component={Main}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Settings" component={settingsComponent} />
+        <Stack.Screen name="Settings" component={Settings} />
       </Stack.Navigator>
     </NavigationContainer>
   );
