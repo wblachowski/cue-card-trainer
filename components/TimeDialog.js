@@ -3,6 +3,7 @@ import { Text, View, TextInput, StyleSheet } from "react-native";
 import Dialog from "react-native-dialog";
 import { useEffect } from "react/cjs/react.development";
 import { useDarkMode } from "react-native-dark-mode";
+import * as colors from "../styles/colors";
 
 export default function TimeDialog({
   title,
@@ -47,7 +48,7 @@ export default function TimeDialog({
         }}
       >
         <Dialog.Input
-          underlineColorAndroid="blue"
+          underlineColorAndroid={colors.PRIMARY}
           style={styles.timeInputStyle}
           textAlign="center"
           keyboardType="numeric"
@@ -69,7 +70,7 @@ export default function TimeDialog({
           :
         </Text>
         <Dialog.Input
-          underlineColorAndroid="blue"
+          underlineColorAndroid={colors.PRIMARY}
           style={styles.timeInputStyle}
           textAlign="center"
           keyboardType="numeric"

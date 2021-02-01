@@ -10,6 +10,7 @@ import {
   saveSetting,
 } from "../utils/Storage";
 import { secsToMinSecStr } from "../utils/TimeHelpers";
+import * as colors from "../styles/colors";
 
 export default function Settings() {
   const isDarkMode = useDarkMode();
@@ -98,6 +99,10 @@ export default function Settings() {
             onValueChange={(value) => {
               savePrepEnabled(value);
             }}
+            switchProps={{
+              thumbColor: prepEnabled ? colors.PRIMARY : "#ffffff",
+            }}
+            trackColor={{ true: "#90CAF9", false: "grey" }}
             value={prepEnabled}
             containerStyle={{ backgroundColor: isDarkMode ? "black" : "white" }}
             titleStyle={{ color: isDarkMode ? "white" : "black" }}

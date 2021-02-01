@@ -27,6 +27,7 @@ import {
   readSettings as readSettingsFromStorage,
 } from "../utils/Storage";
 import { secsToStr } from "../utils/TimeHelpers";
+import * as colors from "../styles/colors";
 
 export default function Main({ navigation }) {
   const [card, setCard] = useState({});
@@ -200,17 +201,19 @@ export default function Main({ navigation }) {
         <Button
           primary
           text=""
+          style={{ color: colors.PRIMARY }}
           icon="settings"
           onPress={() => {
             setTimerState(TimerStates.paused);
             navigation.navigate("Settings");
           }}
-        ></Button>
+          style={{ text: { color: colors.PRIMARY } }}
+        />
         <View style={styles.settingRow}>
           <Text style={styles.settingsText}>Car mode</Text>
           <Switch
             trackColor={{ false: "#767577", true: "#90CAF9" }}
-            thumbColor={carModeEnabled ? "#2962FF" : "#ffffff"}
+            thumbColor={carModeEnabled ? colors.PRIMARY : "#ffffff"}
             ios_backgroundColor="#3e3e3e"
             onValueChange={() => setCarModeEnabled((prev) => !prev)}
             value={carModeEnabled}
