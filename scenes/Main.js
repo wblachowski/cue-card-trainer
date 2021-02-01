@@ -30,10 +30,8 @@ import {
 export default function Main({ navigation }) {
   const SECS = 5;
   const [card, setCard] = useState({});
-  const [initialSecs, setInitialSecs] = useState(SECS);
-  const [initialPrepSecs, setInitialPrepSecs] = useState(SECS);
-  const [secs, setSecs] = useState(initialSecs);
-  const [prepEnabled, setPrepEnabled] = useState(false);
+  const [settings, setSettings] = useState({});
+  const [secs, setSecs] = useState(SECS);
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [timerType, setTimerType] = useState(TimerTypes.none);
   const [cardId, setCardId] = useState(-1);
@@ -44,8 +42,8 @@ export default function Main({ navigation }) {
 
   readSettings = async () => {
     readSettingsFromStorage().then((settings) => {
+      setSettings(settings);
       console.log("settings:", settings);
-      setPrepEnabled(settings.prepEnabled);
       if (settings.prepEnabled) {
         setTimerType(TimerTypes.prep);
         setSecs(settings.prepTime);
@@ -56,16 +54,14 @@ export default function Main({ navigation }) {
       if (timerState === TimerStates.finished) {
         setTimerState(TimerStates.notStarted);
       }
-      setInitialSecs(parseInt(settings.answerTime));
-      setInitialPrepSecs(parseInt(settings.prepTime));
     });
   };
 
   useEffect(() => {
     if (timerType === TimerTypes.answer) {
-      setSecs(initialSecs);
+      setSecs(settings.answerTime);
     } else {
-      setSecs(initialPrepSecs);
+      setSecs(settings.prepTime);
     }
   }, [timerType]);
 
@@ -92,11 +88,11 @@ export default function Main({ navigation }) {
 
   useEffect(() => {
     if (cardId >= 0) {
-      if (prepEnabled) {
-        setSecs(initialPrepSecs);
+      if (settings.prepEnabled) {
+        setSecs(settings.prepTime);
         setTimerType(TimerTypes.prep);
       } else {
-        setSecs(initialSecs);
+        setSecs(settings.answerTime);
         setTimerType(TimerTypes.answer);
       }
       setTimerState(TimerStates.notStarted);
@@ -179,11 +175,11 @@ export default function Main({ navigation }) {
   };
 
   const startTimer = () => {
-    if (prepEnabled) {
+    if (settings.prepEnabled) {
       setTimerType(TimerTypes.prep);
-      setSecs(initialPrepSecs);
+      setSecs(settings.prepTime);
     } else {
-      setSecs(initialSecs);
+      setSecs(settings.answerTime);
     }
     setTimerState(TimerStates.running);
   };

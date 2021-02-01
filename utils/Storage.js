@@ -16,8 +16,8 @@ export const readSettings = async () => {
   ]);
   var settings = Object.fromEntries(items);
   settings.prepEnabled = settings.prepEnabled === "true";
-  settings.answerTime = settings.answerTime ?? 120;
-  settings.prepTime = settings.prepTime ?? 30;
+  settings.answerTime = parseInt(settings.answerTime ?? 120);
+  settings.prepTime = parseInt(settings.prepTime ?? 30);
   return settings;
 };
 
