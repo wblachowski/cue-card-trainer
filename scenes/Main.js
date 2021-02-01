@@ -22,6 +22,7 @@ import {
   DynamicValue,
   useDynamicStyleSheet,
 } from "react-native-dark-mode";
+import { storeLastCardId, retrieveLastCardId } from "../utils/Storage";
 
 export default function Main({ navigation }) {
   const SECS = 5;
@@ -37,13 +38,6 @@ export default function Main({ navigation }) {
   const [carModeEnabled, setCarModeEnabled] = useState(false);
   const [db, setDb] = useState();
   const styles = useDynamicStyleSheet(dynamicStyles);
-
-  storeLastCardId = async () =>
-    AsyncStorage.setItem("lastCardId", cardId.toString()).then(() =>
-      console.log(`Saved: ${cardId}`)
-    );
-
-  retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
 
   readSettings = async () => {
     const read = async () => {
@@ -115,7 +109,7 @@ export default function Main({ navigation }) {
       }
       setTimerState(TimerStates.notStarted);
       fetchData(cardId);
-      storeLastCardId();
+      storeLastCardId(cardId);
     }
   }, [cardId]);
 
