@@ -87,9 +87,7 @@ export default function Main({ navigation }) {
     Database.initialize().then(() => {
       sqlite = SQLite.openDatabase("cards2.db");
       setDb(new Database(sqlite));
-      console.log("database initialized");
     });
-    console.log("in empty use effect");
     readSettings();
   }, []);
 
@@ -107,15 +105,15 @@ export default function Main({ navigation }) {
   }, [db]);
 
   useEffect(() => {
-    if (prepEnabled) {
-      setSecs(initialPrepSecs);
-      setTimerType(TimerTypes.prep);
-    } else {
-      setSecs(initialSecs);
-      setTimerType(TimerTypes.answer);
-    }
-    setTimerState(TimerStates.notStarted);
     if (cardId >= 0) {
+      if (prepEnabled) {
+        setSecs(initialPrepSecs);
+        setTimerType(TimerTypes.prep);
+      } else {
+        setSecs(initialSecs);
+        setTimerType(TimerTypes.answer);
+      }
+      setTimerState(TimerStates.notStarted);
       fetchData(cardId);
       storeLastCardId();
     }
@@ -216,13 +214,8 @@ export default function Main({ navigation }) {
       setTimerState(TimerStates.running);
     }
   };
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      readSettings();
-    });
 
-    return unsubscribe;
-  }, [navigation]);
+  useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
