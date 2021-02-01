@@ -20,3 +20,6 @@ export const readSettings = async () => {
   settings.prepTime = settings.prepTime ?? 30;
   return settings;
 };
+
+export const saveSetting = async (setting, value) =>
+  AsyncStorage.setItem(setting, value);
