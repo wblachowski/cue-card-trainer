@@ -26,6 +26,7 @@ import {
   retrieveLastCardId,
   readSettings as readSettingsFromStorage,
 } from "../utils/Storage";
+import { timeStr } from "../utils/TimeHelpers";
 
 export default function Main({ navigation }) {
   const [card, setCard] = useState({});
@@ -168,11 +169,6 @@ export default function Main({ navigation }) {
   const prevCard = () =>
     setCardId((prev) => (prev - 1 < 0 ? cardCount - 1 : prev - 1));
 
-  const timeStr = () => {
-    var t = secs >= 0 ? secs : 0;
-    return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
-  };
-
   const startTimer = () => {
     if (settings.prepEnabled) {
       setTimerType(TimerTypes.prep);
@@ -233,7 +229,7 @@ export default function Main({ navigation }) {
             fontSize: 64,
           }}
         >
-          {timeStr()}
+          {timeStr(secs)}
         </Text>
       </View>
       <View style={styles.bottomNav}>
