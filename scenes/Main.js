@@ -28,10 +28,9 @@ import {
 } from "../utils/Storage";
 
 export default function Main({ navigation }) {
-  const SECS = 5;
   const [card, setCard] = useState({});
   const [settings, setSettings] = useState({});
-  const [secs, setSecs] = useState(SECS);
+  const [secs, setSecs] = useState();
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [timerType, setTimerType] = useState(TimerTypes.none);
   const [cardId, setCardId] = useState(-1);
