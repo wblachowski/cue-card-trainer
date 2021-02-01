@@ -39,7 +39,7 @@ export default function Main({ navigation }) {
   const styles = useDynamicStyleSheet(dynamicStyles);
 
   storeLastCardId = async () =>
-    AsyncStorage.setItem("lastCardId", cardId.toString()).then((xd) =>
+    AsyncStorage.setItem("lastCardId", cardId.toString()).then(() =>
       console.log(`Saved: ${cardId}`)
     );
 
