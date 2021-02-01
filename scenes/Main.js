@@ -45,10 +45,7 @@ export default function Main({ navigation }) {
 
   retrieveLastCardId = async () => AsyncStorage.getItem("lastCardId");
 
-  readAnswerTime = async () => AsyncStorage.getItem("answerTime");
-
   readSettings = async () => {
-    console.log("Reading settings");
     const read = async () => {
       var items = await AsyncStorage.multiGet([
         "answerTime",
@@ -58,12 +55,12 @@ export default function Main({ navigation }) {
       return Object.fromEntries(items);
     };
     read().then((settings) => {
-      console.log("setts", settings);
-      settings.prepEnabled = settings.prepEnabled ?? false;
+      console.log("settings:", settings);
+      settings.prepEnabled = settings.prepEnabled === "true";
       settings.answerTime = settings.answerTime ?? 120;
       settings.prepTime = settings.prepTime ?? 30;
-      setPrepEnabled(settings.prepEnabled === "true");
-      if (settings.prepEnabled === "true") {
+      setPrepEnabled(settings.prepEnabled);
+      if (settings.prepEnabled) {
         setTimerType(TimerTypes.prep);
         setSecs(settings.prepTime);
       } else {
