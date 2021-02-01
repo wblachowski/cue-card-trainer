@@ -22,7 +22,11 @@ import {
   DynamicValue,
   useDynamicStyleSheet,
 } from "react-native-dark-mode";
-import { storeLastCardId, retrieveLastCardId } from "../utils/Storage";
+import {
+  storeLastCardId,
+  retrieveLastCardId,
+  readSettings as readSettingsFromStorage,
+} from "../utils/Storage";
 
 export default function Main({ navigation }) {
   const SECS = 5;
@@ -40,19 +44,8 @@ export default function Main({ navigation }) {
   const styles = useDynamicStyleSheet(dynamicStyles);
 
   readSettings = async () => {
-    const read = async () => {
-      var items = await AsyncStorage.multiGet([
-        "answerTime",
-        "prepEnabled",
-        "prepTime",
-      ]);
-      return Object.fromEntries(items);
-    };
-    read().then((settings) => {
+    readSettingsFromStorage().then((settings) => {
       console.log("settings:", settings);
-      settings.prepEnabled = settings.prepEnabled === "true";
-      settings.answerTime = settings.answerTime ?? 120;
-      settings.prepTime = settings.prepTime ?? 30;
       setPrepEnabled(settings.prepEnabled);
       if (settings.prepEnabled) {
         setTimerType(TimerTypes.prep);
