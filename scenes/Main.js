@@ -225,7 +225,6 @@ export default function Main({ navigation }) {
         <Card card={card} />
       </View>
       <View style={styles.timerView}>
-        <Text>{timerType === TimerTypes.prep ? "preparation" : "answer"}</Text>
         <Text
           style={{
             color: timerState === TimerStates.finished ? "red" : "black",
@@ -233,6 +232,9 @@ export default function Main({ navigation }) {
           }}
         >
           {secsToStr(secs)}
+        </Text>
+        <Text style={styles.timerTypeText}>
+          {timerType === TimerTypes.prep ? "preparation" : "answer"}
         </Text>
       </View>
       <View style={styles.bottomNav}>
@@ -282,6 +284,10 @@ const dynamicStyles = new DynamicStyleSheet({
   timerView: {
     position: "absolute",
     bottom: 190,
+  },
+  timerTypeText: {
+    textAlign: "center",
+    marginTop: -5,
   },
   bottomNav: {
     flexDirection: "row",
