@@ -100,9 +100,9 @@ export default function Settings() {
               savePrepEnabled(value);
             }}
             switchProps={{
-              thumbColor: prepEnabled ? colors.PRIMARY : "#ffffff",
+              thumbColor: prepEnabled ? colors.PRIMARY : colors.WHITE,
             }}
-            trackColor={{ true: "#90CAF9", false: "grey" }}
+            trackColor={{ true: colors.LIGHT, false: colors.GREY }}
             value={prepEnabled}
             containerStyle={{ backgroundColor: isDarkMode ? "black" : "white" }}
             titleStyle={{ color: isDarkMode ? "white" : "black" }}

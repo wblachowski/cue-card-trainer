@@ -48,7 +48,7 @@ export default function TimeDialog({
         }}
       >
         <Dialog.Input
-          underlineColorAndroid={colors.PRIMARY}
+          underlineColorAndroid={colors.DARK}
           style={styles.timeInputStyle}
           textAlign="center"
           keyboardType="numeric"
@@ -70,7 +70,7 @@ export default function TimeDialog({
           :
         </Text>
         <Dialog.Input
-          underlineColorAndroid={colors.PRIMARY}
+          underlineColorAndroid={colors.DARK}
           style={styles.timeInputStyle}
           textAlign="center"
           keyboardType="numeric"

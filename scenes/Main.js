@@ -212,8 +212,8 @@ export default function Main({ navigation }) {
         <View style={styles.settingRow}>
           <Text style={styles.settingsText}>Car mode</Text>
           <Switch
-            trackColor={{ false: "#767577", true: "#90CAF9" }}
-            thumbColor={carModeEnabled ? colors.PRIMARY : "#ffffff"}
+            trackColor={{ false: colors.GREY, true: colors.LIGHT }}
+            thumbColor={carModeEnabled ? colors.PRIMARY : colors.WHITE}
             ios_backgroundColor="#3e3e3e"
             onValueChange={() => setCarModeEnabled((prev) => !prev)}
             value={carModeEnabled}
