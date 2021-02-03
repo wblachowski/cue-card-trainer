@@ -74,6 +74,8 @@ export default function Main({ navigation }) {
     readSettings();
   }, []);
 
+  useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
+
   useEffect(() => {
     if (db) {
       getCardsCount()
@@ -152,17 +154,9 @@ export default function Main({ navigation }) {
     return () => BackgroundTimer.clearInterval(interval);
   }, [timerState, secs]);
 
-  const getCardsCount = () =>
-    db.getCardsCount().then((cardCount) => {
-      console.log(`Card count: ${cardCount}`);
-      setCardCount(cardCount);
-    });
+  const getCardsCount = () => db.getCardsCount().then(setCardCount);
 
-  const fetchData = (cardId) =>
-    db.fetchData(cardId).then((card) => {
-      console.log(`Displaying: ${cardId}`);
-      setCard(card);
-    });
+  const fetchData = (cardId) => db.fetchData(cardId).then(setCard);
 
   const nextCard = () =>
     setCardId((prev) => (prev + 1 >= cardCount ? 0 : prev + 1));
@@ -193,8 +187,6 @@ export default function Main({ navigation }) {
     }
   };
 
-  useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.settingsView}>
@@ -214,7 +206,6 @@ export default function Main({ navigation }) {
           <Switch
             trackColor={{ false: colors.GREY, true: colors.LIGHT }}
             thumbColor={carModeEnabled ? colors.PRIMARY : colors.WHITE}
-            ios_backgroundColor="#3e3e3e"
             onValueChange={() => setCarModeEnabled((prev) => !prev)}
             value={carModeEnabled}
           />
