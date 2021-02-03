@@ -13,7 +13,6 @@ import BottomNav from "../components/BottomNav";
 import { TimerStates, TimerTypes } from "../Constants";
 import Database from "../Database";
 import * as SQLite from "expo-sqlite";
-import * as Speech from "expo-speech";
 import { Button } from "react-native-material-ui";
 import BackgroundTimer from "react-native-background-timer";
 import {
@@ -27,6 +26,7 @@ import {
   readSettings as readSettingsFromStorage,
 } from "../utils/Storage";
 import { secsToStr } from "../utils/TimeHelpers";
+import * as Speech from "../utils/Speech";
 import * as colors from "../styles/colors";
 
 export default function Main({ navigation }) {
@@ -106,18 +106,7 @@ export default function Main({ navigation }) {
 
   useEffect(() => {
     if (card && carModeEnabled) {
-      Speech.stop();
-      Speech.speak(card.title);
-      Speech.speak(card.prompt);
-      Speech.speak(card.bullets?.join(",\n"));
-      Speech.speak(card.ending);
-      var prompt = timerType === TimerTypes.prep ? "Prepare" : "Answer";
-      Speech.speak(prompt, {
-        onDone: () => {
-          console.log("Reading done!");
-          startTimer();
-        },
-      });
+      Speech.readCard(card, timerType, startTimer);
     }
     if (!carModeEnabled) {
       Speech.stop();
@@ -136,19 +125,15 @@ export default function Main({ navigation }) {
     }
     if (secs < 0 && timerType === TimerTypes.prep) {
       if (carModeEnabled) {
-        Speech.speak("Answer", {
-          onDone: () => {
-            setTimerType(TimerTypes.answer);
-          },
+        Speech.speak("Answer", () => {
+          setTimerType(TimerTypes.answer);
         });
       }
       setTimerType(TimerTypes.answer);
     }
     if (timerState === TimerStates.finished && carModeEnabled) {
-      Speech.speak("Time's up!", {
-        onDone: () => {
-          nextCard();
-        },
+      Speech.speak("Time's up!", () => {
+        nextCard();
       });
     }
     return () => BackgroundTimer.clearInterval(interval);
