@@ -7,7 +7,6 @@ import {
   View,
   Switch,
 } from "react-native";
-import * as SQLite from "expo-sqlite";
 import { Button } from "react-native-material-ui";
 import BackgroundTimer from "react-native-background-timer";
 import {
@@ -58,6 +57,11 @@ export default function Main({ navigation }) {
   };
 
   useEffect(() => {
+    Database.initialize().then(setDb);
+    readSettings();
+  }, []);
+
+  useEffect(() => {
     if (timerType === TimerTypes.answer) {
       setSecs(settings.answerTime);
     } else {
@@ -65,19 +69,12 @@ export default function Main({ navigation }) {
     }
   }, [timerType]);
 
-  useEffect(() => {
-    Database.initialize().then(() => {
-      sqlite = SQLite.openDatabase("cards2.db");
-      setDb(new Database(sqlite));
-    });
-    readSettings();
-  }, []);
-
   useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
 
   useEffect(() => {
     if (db) {
-      getCardsCount()
+      db.getCardsCount()
+        .then(setCardCount)
         .then(retrieveLastCardId)
         .then((lastCardId) => {
           if (lastCardId != null) {
@@ -137,8 +134,6 @@ export default function Main({ navigation }) {
     }
     return () => BackgroundTimer.clearInterval(interval);
   }, [timerState, secs]);
-
-  const getCardsCount = () => db.getCardsCount().then(setCardCount);
 
   const fetchData = (cardId) => db.fetchData(cardId).then(setCard);
 

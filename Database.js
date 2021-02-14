@@ -1,9 +1,10 @@
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
+import * as SQLite from "expo-sqlite";
 
 export default class Database {
-  constructor(db) {
-    this.db = db;
+  constructor(dbPath) {
+    this.db = SQLite.openDatabase(dbPath);
   }
 
   static initialize = async () => {
@@ -28,17 +29,17 @@ export default class Database {
     }
 
     let dbInfo = await FileSystem.getInfoAsync(
-      `${FileSystem.documentDirectory}` + "SQLite/cards2.db"
+      `${FileSystem.documentDirectory}` + "SQLite/cards.db"
     );
     if (!dbInfo.exists) {
       console.log("db doesnt exist");
       return FileSystem.downloadAsync(
         Asset.fromModule(require("./assets/cards.db")).uri,
-        FileSystem.documentDirectory + "SQLite/cards2.db"
+        FileSystem.documentDirectory + "SQLite/cards.db"
       );
     }
     console.log("db exists");
-    return Promise.resolve();
+    return new Database("cards.db");
   };
 
   getCardsCount = () =>
