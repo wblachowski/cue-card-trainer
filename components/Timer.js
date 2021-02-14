@@ -2,20 +2,28 @@ import React from "react";
 import { Text, View } from "react-native";
 import {
   DynamicStyleSheet,
+  DynamicValue,
   useDynamicStyleSheet,
+  useDarkMode,
 } from "react-native-dark-mode";
 import { secsToStr } from "../utils/TimeHelpers";
 import { TimerStates, TimerTypes } from "../Constants";
 
 export default function Timer({ timerState, timerType, secs }) {
   const styles = useDynamicStyleSheet(dynamicStyles);
+  const isDarkMode = useDarkMode();
 
   return (
     <View>
       <Text
         style={{
           ...styles.timeText,
-          color: timerState === TimerStates.finished ? "red" : "black",
+          color:
+            timerState === TimerStates.finished
+              ? "red"
+              : isDarkMode
+              ? "white"
+              : "black",
         }}
       >
         {secsToStr(secs)}
@@ -34,5 +42,6 @@ const dynamicStyles = new DynamicStyleSheet({
   timerTypeText: {
     textAlign: "center",
     marginTop: -5,
+    color: new DynamicValue("black", "white"),
   },
 });
