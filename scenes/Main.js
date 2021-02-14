@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  SafeAreaView,
-  Platform,
-  StatusBar,
-  View,
-  Switch,
-} from "react-native";
-import { Button } from "react-native-material-ui";
+import { SafeAreaView, Platform, StatusBar, View } from "react-native";
 import BackgroundTimer from "react-native-background-timer";
 import {
   DynamicStyleSheet,
   DynamicValue,
   useDynamicStyleSheet,
 } from "react-native-dark-mode";
+import TopPanel from "../components/TopPanel";
 import Card from "../components/Card";
 import Timer from "../components/Timer";
 import BottomNav from "../components/BottomNav";
@@ -25,7 +18,6 @@ import {
   readSettings as readSettingsFromStorage,
 } from "../utils/Storage";
 import * as Speech from "../utils/Speech";
-import * as colors from "../styles/colors";
 
 export default function Main({ navigation }) {
   const [card, setCard] = useState({});
@@ -166,31 +158,22 @@ export default function Main({ navigation }) {
     }
   };
 
+  const settingsOnClick = () => {
+    setTimerState(TimerStates.paused);
+    navigation.navigate("Settings");
+  };
+
+  const carModeOnClick = () => setCarModeEnabled((prev) => !prev);
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.settingsView}>
-        <Button
-          primary
-          text=""
-          style={{ color: colors.PRIMARY }}
-          icon="settings"
-          onPress={() => {
-            setTimerState(TimerStates.paused);
-            navigation.navigate("Settings");
-          }}
-          style={{ text: { color: colors.PRIMARY } }}
+      <View style={styles.topPanelView}>
+        <TopPanel
+          settingsOnClick={settingsOnClick}
+          carModeOnClick={carModeOnClick}
+          carModeEnabled={carModeEnabled}
         />
-        <View style={styles.settingRow}>
-          <Text style={styles.settingsText}>Car mode</Text>
-          <Switch
-            trackColor={{ false: colors.GREY, true: colors.LIGHT }}
-            thumbColor={carModeEnabled ? colors.PRIMARY : colors.WHITE}
-            onValueChange={() => setCarModeEnabled((prev) => !prev)}
-            value={carModeEnabled}
-          />
-        </View>
       </View>
-
       <View style={styles.cardView}>
         <Card card={card} />
       </View>
@@ -218,21 +201,11 @@ const dynamicStyles = new DynamicStyleSheet({
     color: "white",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
-  settingsView: {
+  topPanelView: {
     position: "absolute",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     top: 20,
     right: 30,
-    alignItems: "flex-end",
-  },
-  settingRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  settingsText: {
-    marginRight: 8,
-    marginTop: 2,
-    color: new DynamicValue("black", "white"),
   },
   cardView: {
     position: "absolute",
