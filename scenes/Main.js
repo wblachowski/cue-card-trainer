@@ -1,4 +1,3 @@
-import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
 import {
   Text,
@@ -8,11 +7,6 @@ import {
   View,
   Switch,
 } from "react-native";
-import Card from "../components/Card";
-import Timer from "../components/Timer";
-import BottomNav from "../components/BottomNav";
-import { TimerStates, TimerTypes } from "../Constants";
-import Database from "../Database";
 import * as SQLite from "expo-sqlite";
 import { Button } from "react-native-material-ui";
 import BackgroundTimer from "react-native-background-timer";
@@ -21,6 +15,11 @@ import {
   DynamicValue,
   useDynamicStyleSheet,
 } from "react-native-dark-mode";
+import Card from "../components/Card";
+import Timer from "../components/Timer";
+import BottomNav from "../components/BottomNav";
+import { TimerStates, TimerTypes } from "../Constants";
+import Database from "../Database";
 import {
   storeLastCardId,
   retrieveLastCardId,
