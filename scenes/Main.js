@@ -9,6 +9,7 @@ import {
   Switch,
 } from "react-native";
 import Card from "../components/Card";
+import Timer from "../components/Timer";
 import BottomNav from "../components/BottomNav";
 import { TimerStates, TimerTypes } from "../Constants";
 import Database from "../Database";
@@ -25,7 +26,6 @@ import {
   retrieveLastCardId,
   readSettings as readSettingsFromStorage,
 } from "../utils/Storage";
-import { secsToStr } from "../utils/TimeHelpers";
 import * as Speech from "../utils/Speech";
 import * as colors from "../styles/colors";
 
@@ -201,19 +201,9 @@ export default function Main({ navigation }) {
         <Card card={card} />
       </View>
       <View style={styles.timerView}>
-        <Text
-          style={{
-            color: timerState === TimerStates.finished ? "red" : "black",
-            fontSize: 64,
-          }}
-        >
-          {secsToStr(secs)}
-        </Text>
-        <Text style={styles.timerTypeText}>
-          {timerType === TimerTypes.prep ? "preparation" : "answer"}
-        </Text>
+        <Timer timerState={timerState} timerType={timerType} secs={secs} />
       </View>
-      <View style={styles.bottomNav}>
+      <View style={styles.bottomNavView}>
         <BottomNav
           prevClicked={prevCard}
           playClicked={mainButtonAction}
@@ -261,11 +251,7 @@ const dynamicStyles = new DynamicStyleSheet({
     position: "absolute",
     bottom: 190,
   },
-  timerTypeText: {
-    textAlign: "center",
-    marginTop: -5,
-  },
-  bottomNav: {
+  bottomNavView: {
     flexDirection: "row",
     position: "absolute",
     bottom: 28,
