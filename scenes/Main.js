@@ -27,21 +27,6 @@ export default function Main({ navigation }) {
   const [db, setDb] = useState();
   const styles = useDynamicStyleSheet(dynamicStyles);
 
-  readSettings = async () => {
-    Storage.readSettings().then((settings) => {
-      setSettings(settings);
-      console.log("settings:", settings);
-      if (settings.prepEnabled) {
-        setTimerType(TimerTypes.prep);
-        setSecs(settings.prepTime);
-      } else {
-        setTimerType(TimerTypes.answer);
-        setSecs(settings.answerTime);
-      }
-      setTimerState(TimerStates.notStarted);
-    });
-  };
-
   useEffect(() => {
     Database.initialize().then(setDb);
     readSettings();
@@ -111,6 +96,21 @@ export default function Main({ navigation }) {
     }
     return () => BackgroundTimer.clearInterval(interval);
   }, [timerState, secs]);
+
+  const readSettings = async () => {
+    Storage.readSettings().then((settings) => {
+      setSettings(settings);
+      console.log("settings:", settings);
+      if (settings.prepEnabled) {
+        setTimerType(TimerTypes.prep);
+        setSecs(settings.prepTime);
+      } else {
+        setTimerType(TimerTypes.answer);
+        setSecs(settings.answerTime);
+      }
+      setTimerState(TimerStates.notStarted);
+    });
+  };
 
   const fetchData = (cardId) => db.fetchData(cardId).then(setCard);
 
