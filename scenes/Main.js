@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, Platform, StatusBar, View } from "react-native";
+import {
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  View,
+  ScrollView,
+} from "react-native";
 import BackgroundTimer from "react-native-background-timer";
 import {
   DynamicStyleSheet,
@@ -164,9 +170,9 @@ export default function Main({ navigation }) {
             carModeEnabled={carModeEnabled}
           />
         </View>
-        <View style={styles.cardView}>
+        <ScrollView style={styles.cardView}>
           <Card card={card} />
-        </View>
+        </ScrollView>
         <View style={styles.timerView}>
           <Timer timerState={timerState} timerType={timerType} secs={secs} />
         </View>
@@ -201,14 +207,16 @@ const dynamicStyles = new DynamicStyleSheet({
   },
   cardView: {
     position: "absolute",
+    height: 280,
+    overflow: "scroll",
     left: 0,
     top: 200,
     paddingLeft: 30,
-    marginRight: 30,
+    paddingRight: 30,
   },
   timerView: {
     position: "absolute",
-    bottom: 190,
+    bottom: 150,
   },
   bottomNavView: {
     flexDirection: "row",
