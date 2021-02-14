@@ -60,17 +60,11 @@ export default function Main({ navigation }) {
   useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
 
   useEffect(() => {
-    if (db) {
-      db.getCardsCount()
-        .then(setCardCount)
-        .then(Storage.retrieveLastCardId)
-        .then((lastCardId) => {
-          if (lastCardId != null) {
-            console.log(`Retrieved: ${lastCardId}`);
-            setCardId(parseInt(lastCardId));
-          }
-        });
-    }
+    db?.getCardsCount()
+      .then(setCardCount)
+      .then(Storage.retrieveLastCardId)
+      .then(parseInt)
+      .then(setCardId);
   }, [db]);
 
   useEffect(() => {
@@ -100,25 +94,22 @@ export default function Main({ navigation }) {
   useEffect(() => {
     let interval = null;
     if (timerState === TimerStates.running) {
-      interval = BackgroundTimer.setInterval(() => {
-        setSecs((secs) => secs - 1);
-      }, 1000);
+      interval = BackgroundTimer.setInterval(
+        () => setSecs((secs) => secs - 1),
+        1000
+      );
     }
     if (secs <= 0 && timerType === TimerTypes.answer) {
       setTimerState(TimerStates.finished);
     }
     if (secs < 0 && timerType === TimerTypes.prep) {
       if (carModeEnabled) {
-        Speech.speak("Answer", () => {
-          setTimerType(TimerTypes.answer);
-        });
+        Speech.speak("Answer", () => setTimerType(TimerTypes.answer));
       }
       setTimerType(TimerTypes.answer);
     }
     if (timerState === TimerStates.finished && carModeEnabled) {
-      Speech.speak("Time's up!", () => {
-        nextCard();
-      });
+      Speech.speak("Time's up!", nextCard);
     }
     return () => BackgroundTimer.clearInterval(interval);
   }, [timerState, secs]);
