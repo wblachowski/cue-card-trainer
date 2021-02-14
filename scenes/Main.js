@@ -38,9 +38,7 @@ export default function Main({ navigation }) {
         setTimerType(TimerTypes.answer);
         setSecs(settings.answerTime);
       }
-      if (timerState === TimerStates.finished) {
-        setTimerState(TimerStates.notStarted);
-      }
+      setTimerState(TimerStates.notStarted);
     });
   };
 
