@@ -62,7 +62,7 @@ export default function Settings() {
   return (
     <View
       style={{
-        backgroundColor: isDarkMode ? "black" : "white",
+        backgroundColor: isDarkMode ? colors.DARK_GREY : colors.WHITE,
         height: "100%",
       }}
     >
@@ -104,7 +104,9 @@ export default function Settings() {
             }}
             trackColor={{ true: colors.LIGHT, false: colors.GREY }}
             value={prepEnabled}
-            containerStyle={{ backgroundColor: isDarkMode ? "black" : "white" }}
+            containerStyle={{
+              backgroundColor: isDarkMode ? colors.DARK_GREY : colors.WHITE,
+            }}
             titleStyle={{ color: isDarkMode ? "white" : "black" }}
           />
         </>

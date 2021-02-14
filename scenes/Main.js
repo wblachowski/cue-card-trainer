@@ -20,6 +20,7 @@ import { TimerStates, TimerTypes } from "../Constants";
 import Database from "../Database";
 import * as Storage from "../utils/Storage";
 import * as Speech from "../utils/Speech";
+import * as colors from "../styles/colors";
 
 export default function Main({ navigation }) {
   const [card, setCard] = useState();
@@ -195,8 +196,8 @@ const dynamicStyles = new DynamicStyleSheet({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: new DynamicValue("white", "black"),
-    color: "white",
+    backgroundColor: new DynamicValue(colors.WHITE, colors.DARK_GREY),
+    color: colors.WHITE,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   topPanelView: {

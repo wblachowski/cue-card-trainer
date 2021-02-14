@@ -5,6 +5,7 @@ import {
   DynamicValue,
   useDynamicStyleSheet,
 } from "react-native-dark-mode";
+import * as colors from "../styles/colors";
 
 export default function SettingsEdit({
   title,
@@ -34,7 +35,7 @@ const dynamicStyles = new DynamicStyleSheet({
     minHeight: 50,
     alignItems: "center",
     flexDirection: "row",
-    backgroundColor: new DynamicValue("white", "black"),
+    backgroundColor: new DynamicValue(colors.WTHIE, colors.DARK_GREY),
   },
   titleStyle: {
     flex: 1,

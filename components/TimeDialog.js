@@ -32,7 +32,7 @@ export default function TimeDialog({
       visible={visible}
       onBackdropPress={onClose}
       contentStyle={{
-        backgroundColor: isDarkMode ? "black" : "white",
+        backgroundColor: isDarkMode ? colors.DARK_GREY : colors.WHITE,
       }}
     >
       <Dialog.Title style={{ color: isDarkMode ? "white" : "black" }}>
