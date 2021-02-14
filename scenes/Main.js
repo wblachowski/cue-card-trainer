@@ -16,7 +16,7 @@ import * as Storage from "../utils/Storage";
 import * as Speech from "../utils/Speech";
 
 export default function Main({ navigation }) {
-  const [card, setCard] = useState({});
+  const [card, setCard] = useState();
   const [settings, setSettings] = useState({});
   const [secs, setSecs] = useState();
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
@@ -25,6 +25,7 @@ export default function Main({ navigation }) {
   const [cardCount, setCardCount] = useState(-1);
   const [carModeEnabled, setCarModeEnabled] = useState(false);
   const [db, setDb] = useState();
+  const [initilized, setInitialized] = useState(false);
   const styles = useDynamicStyleSheet(dynamicStyles);
 
   useEffect(() => {
@@ -97,19 +98,22 @@ export default function Main({ navigation }) {
     return () => BackgroundTimer.clearInterval(interval);
   }, [timerState, secs]);
 
-  const readSettings = async () => {
-    Storage.readSettings().then((settings) => {
-      setSettings(settings);
-      console.log("settings:", settings);
-      if (settings.prepEnabled) {
-        setTimerType(TimerTypes.prep);
-        setSecs(settings.prepTime);
-      } else {
-        setTimerType(TimerTypes.answer);
-        setSecs(settings.answerTime);
-      }
-      setTimerState(TimerStates.notStarted);
-    });
+  const readSettings = () => {
+    setInitialized(false);
+    Storage.readSettings()
+      .then((settings) => {
+        setSettings(settings);
+        console.log("settings:", settings);
+        if (settings.prepEnabled) {
+          setTimerType(TimerTypes.prep);
+          setSecs(settings.prepTime);
+        } else {
+          setTimerType(TimerTypes.answer);
+          setSecs(settings.answerTime);
+        }
+        setTimerState(TimerStates.notStarted);
+      })
+      .then(() => setInitialized(true));
   };
 
   const fetchData = (cardId) => db.fetchData(cardId).then(setCard);
@@ -151,29 +155,32 @@ export default function Main({ navigation }) {
   const carModeOnClick = () => setCarModeEnabled((prev) => !prev);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topPanelView}>
-        <TopPanel
-          settingsOnClick={settingsOnClick}
-          carModeOnClick={carModeOnClick}
-          carModeEnabled={carModeEnabled}
-        />
-      </View>
-      <View style={styles.cardView}>
-        <Card card={card} />
-      </View>
-      <View style={styles.timerView}>
-        <Timer timerState={timerState} timerType={timerType} secs={secs} />
-      </View>
-      <View style={styles.bottomNavView}>
-        <BottomNav
-          prevClicked={prevCard}
-          playClicked={mainButtonAction}
-          nextClicked={nextCard}
-          timerState={timerState}
-        />
-      </View>
-    </SafeAreaView>
+    (initilized && card && (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.topPanelView}>
+          <TopPanel
+            settingsOnClick={settingsOnClick}
+            carModeOnClick={carModeOnClick}
+            carModeEnabled={carModeEnabled}
+          />
+        </View>
+        <View style={styles.cardView}>
+          <Card card={card} />
+        </View>
+        <View style={styles.timerView}>
+          <Timer timerState={timerState} timerType={timerType} secs={secs} />
+        </View>
+        <View style={styles.bottomNavView}>
+          <BottomNav
+            prevClicked={prevCard}
+            playClicked={mainButtonAction}
+            nextClicked={nextCard}
+            timerState={timerState}
+          />
+        </View>
+      </SafeAreaView>
+    )) ||
+    null
   );
 }
 
