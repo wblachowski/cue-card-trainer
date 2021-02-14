@@ -12,11 +12,7 @@ import Timer from "../components/Timer";
 import BottomNav from "../components/BottomNav";
 import { TimerStates, TimerTypes } from "../Constants";
 import Database from "../Database";
-import {
-  storeLastCardId,
-  retrieveLastCardId,
-  readSettings as readSettingsFromStorage,
-} from "../utils/Storage";
+import * as Storage from "../utils/Storage";
 import * as Speech from "../utils/Speech";
 
 export default function Main({ navigation }) {
@@ -32,7 +28,7 @@ export default function Main({ navigation }) {
   const styles = useDynamicStyleSheet(dynamicStyles);
 
   readSettings = async () => {
-    readSettingsFromStorage().then((settings) => {
+    Storage.readSettings().then((settings) => {
       setSettings(settings);
       console.log("settings:", settings);
       if (settings.prepEnabled) {
@@ -67,7 +63,7 @@ export default function Main({ navigation }) {
     if (db) {
       db.getCardsCount()
         .then(setCardCount)
-        .then(retrieveLastCardId)
+        .then(Storage.retrieveLastCardId)
         .then((lastCardId) => {
           if (lastCardId != null) {
             console.log(`Retrieved: ${lastCardId}`);
@@ -88,7 +84,7 @@ export default function Main({ navigation }) {
       }
       setTimerState(TimerStates.notStarted);
       fetchData(cardId);
-      storeLastCardId(cardId);
+      Storage.storeLastCardId(cardId);
     }
   }, [cardId]);
 
