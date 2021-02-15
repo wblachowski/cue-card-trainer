@@ -8,6 +8,7 @@ import {
 } from "react-native-dark-mode";
 import { secsToStr } from "../utils/TimeHelpers";
 import { TimerStates, TimerTypes } from "../Constants";
+import * as colors from "../styles/colors";
 
 export default function Timer({ timerState, timerType, secs }) {
   const styles = useDynamicStyleSheet(dynamicStyles);
@@ -42,6 +43,6 @@ const dynamicStyles = new DynamicStyleSheet({
   timerTypeText: {
     textAlign: "center",
     marginTop: -5,
-    color: new DynamicValue("black", "white"),
+    color: new DynamicValue(colors.GREY, colors.LIGHT_GREY),
   },
 });
