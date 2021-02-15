@@ -52,12 +52,4 @@ const dynamicStyles = new DynamicStyleSheet({
     paddingRight: 16,
     textAlign: "right",
   },
-  disabledOverlayStyle: {
-    backgroundColor: "rgba(255,255,255,0.6)",
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
 });
