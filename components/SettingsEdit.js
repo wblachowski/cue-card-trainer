@@ -45,7 +45,7 @@ const dynamicStyles = new DynamicStyleSheet({
     color: new DynamicValue("black", "white"),
   },
   valueStyle: {
-    color: "rgb(160,160,160)",
+    color: colors.LIGHT_GREY,
     fontSize: 14,
     flex: 1,
     paddingLeft: 8,

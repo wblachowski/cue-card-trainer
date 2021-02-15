@@ -56,7 +56,7 @@ export default function TimeDialog({
           placeholder={initMinutes}
           onChangeText={(text) => setMinutes(text)}
           placeholderTextColor={
-            isDarkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)"
+            isDarkMode ? colors.LIGHTER_GREY : colors.LIGHT_GREY
           }
           style={{ color: isDarkMode ? "white" : "black" }}
         />
@@ -78,7 +78,7 @@ export default function TimeDialog({
           placeholder={initSeconds}
           onChangeText={(text) => setSeconds(text)}
           placeholderTextColor={
-            isDarkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)"
+            isDarkMode ? colors.LIGHTER_GREY : colors.LIGHT_GREY
           }
           style={{ color: isDarkMode ? "white" : "black" }}
         />

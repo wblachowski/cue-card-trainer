@@ -43,6 +43,6 @@ const dynamicStyles = new DynamicStyleSheet({
   timerTypeText: {
     textAlign: "center",
     marginTop: -5,
-    color: new DynamicValue(colors.GREY, colors.LIGHT_GREY),
+    color: new DynamicValue(colors.GREY, colors.LIGHTER_GREY),
   },
 });
