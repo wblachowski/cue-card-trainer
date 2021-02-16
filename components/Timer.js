@@ -7,7 +7,7 @@ import {
   useDarkMode,
 } from "react-native-dark-mode";
 import { secsToStr } from "../utils/TimeHelpers";
-import { TimerStates, TimerTypes } from "../Constants";
+import { TimerStates, TimerTypes } from "../utils/Constants";
 import * as colors from "../styles/colors";
 
 export default function Timer({ timerState, timerType, secs }) {

@@ -1,5 +1,5 @@
 import * as Speech from "expo-speech";
-import { TimerTypes } from "../Constants";
+import { TimerTypes } from "./Constants";
 
 export const readCard = (card, timerType, onDone) => {
   Speech.stop();

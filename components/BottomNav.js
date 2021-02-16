@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, StatusBar } from "react-native";
 import { Button } from "react-native-material-ui";
-import { TimerStates } from "../Constants";
+import { TimerStates } from "../utils/Constants";
 import * as colors from "../styles/colors";
 
 export default function BottomNav({
