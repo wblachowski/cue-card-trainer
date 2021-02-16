@@ -21,7 +21,9 @@ export default function Timer({ timerState, timerType, secs }) {
           ...styles.timeText,
           color:
             timerState === TimerStates.finished
-              ? "red"
+              ? isDarkMode
+                ? colors.LIGHT_RED
+                : colors.RED
               : isDarkMode
               ? "white"
               : "black",

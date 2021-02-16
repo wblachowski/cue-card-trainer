@@ -6,3 +6,5 @@ export const DARK_GREY = "#121212";
 export const LIGHT_GREY = "#a0a0a0";
 export const LIGHTER_GREY = "#d3d3d3";
 export const WHITE = "#ffffff";
+export const RED = "#b00020";
+export const LIGHT_RED = "#cf6679";
