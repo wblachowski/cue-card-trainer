@@ -7,6 +7,7 @@ import {
   DynamicValue,
 } from "react-native-dark-mode";
 import * as colors from "../styles/colors";
+import { IconButton } from "react-native-paper";
 
 export default function TopPanel({
   settingsOnClick,
@@ -17,13 +18,11 @@ export default function TopPanel({
 
   return (
     <View style={styles.container}>
-      <Button
-        primary
-        text=""
-        style={{ color: colors.PRIMARY }}
+      <IconButton
         icon="settings"
+        size={24}
         onPress={settingsOnClick}
-        style={{ text: { color: colors.PRIMARY } }}
+        color={colors.PRIMARY}
       />
       <View style={styles.row}>
         <Text style={styles.text}>Car mode</Text>
