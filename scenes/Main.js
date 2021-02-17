@@ -206,7 +206,6 @@ const dynamicStyles = new DynamicStyleSheet({
     paddingRight: 30,
     paddingLeft: 30,
     width: "100%",
-    // backgroundColor: "red",
   },
   cardView: {
     position: "absolute",
