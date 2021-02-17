@@ -18,36 +18,40 @@ export default function TopPanel({
 
   return (
     <View style={styles.container}>
-      <IconButton
-        icon="settings"
-        size={24}
-        onPress={settingsOnClick}
-        color={colors.PRIMARY}
-      />
-      <View style={styles.row}>
-        <Text style={styles.text}>Car mode</Text>
+      <View style={{ ...styles.row, ...styles.carMode }}>
         <Switch
           trackColor={{ false: colors.GREY, true: colors.LIGHT }}
           thumbColor={carModeEnabled ? colors.PRIMARY : colors.WHITE}
           onValueChange={carModeOnClick}
           value={carModeEnabled}
         />
+        <Text style={styles.text}>Car mode</Text>
       </View>
+      <IconButton
+        icon="settings"
+        size={24}
+        onPress={settingsOnClick}
+        color={colors.PRIMARY}
+      />
     </View>
   );
 }
 
 const dynamicStyles = new DynamicStyleSheet({
   container: {
-    alignItems: "flex-end",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   row: {
     flexDirection: "row",
     marginBottom: 4,
   },
+  carMode: {
+    marginTop: 4,
+  },
   text: {
-    marginRight: 8,
-    marginTop: 2,
+    marginLeft: 5,
+    marginTop: 10,
     color: new DynamicValue("black", "white"),
   },
 });
