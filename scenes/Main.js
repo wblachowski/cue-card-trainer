@@ -5,13 +5,9 @@ import {
   StatusBar,
   View,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import BackgroundTimer from "react-native-background-timer";
-import {
-  DynamicStyleSheet,
-  DynamicValue,
-  useDynamicStyleSheet,
-} from "react-native-dark-mode";
 import TopPanel from "../components/TopPanel";
 import Card from "../components/Card";
 import Timer from "../components/Timer";
@@ -20,7 +16,6 @@ import { TimerStates, TimerTypes } from "../utils/Constants";
 import Database from "../utils/Database";
 import * as Storage from "../utils/Storage";
 import * as Speech from "../utils/Speech";
-import * as colors from "../styles/colors";
 
 export default function Main({ navigation }) {
   const [card, setCard] = useState();
@@ -33,7 +28,6 @@ export default function Main({ navigation }) {
   const [carModeEnabled, setCarModeEnabled] = useState(false);
   const [db, setDb] = useState();
   const [initilized, setInitialized] = useState(false);
-  const styles = useDynamicStyleSheet(dynamicStyles);
 
   useEffect(() => {
     Database.initialize().then(setDb);
@@ -191,13 +185,11 @@ export default function Main({ navigation }) {
   );
 }
 
-const dynamicStyles = new DynamicStyleSheet({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: new DynamicValue(colors.WHITE, colors.DARK_GREY),
-    color: colors.WHITE,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   topPanelView: {
