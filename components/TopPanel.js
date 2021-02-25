@@ -1,12 +1,12 @@
 import React from "react";
-import { Text, View, Switch } from "react-native";
-import { Button } from "react-native-material-ui";
+import { Text, View } from "react-native";
+import { Switch } from "react-native-paper";
 import {
   DynamicStyleSheet,
   useDynamicStyleSheet,
   DynamicValue,
 } from "react-native-dark-mode";
-import * as colors from "../styles/colors";
+import { useTheme } from "react-native-paper";
 import { IconButton } from "react-native-paper";
 
 export default function TopPanel({
@@ -15,15 +15,15 @@ export default function TopPanel({
   carModeEnabled,
 }) {
   const styles = useDynamicStyleSheet(dynamicStyles);
+  const { colors } = useTheme();
 
   return (
     <View style={styles.container}>
       <View style={{ ...styles.row, ...styles.carMode }}>
         <Switch
-          trackColor={{ false: colors.GREY, true: colors.LIGHT }}
-          thumbColor={carModeEnabled ? colors.PRIMARY : colors.WHITE}
           onValueChange={carModeOnClick}
           value={carModeEnabled}
+          color={colors.primary}
         />
         <Text style={styles.text}>Car mode</Text>
       </View>
@@ -31,7 +31,7 @@ export default function TopPanel({
         icon="settings"
         size={24}
         onPress={settingsOnClick}
-        color={colors.PRIMARY}
+        color={colors.primary}
       />
     </View>
   );
