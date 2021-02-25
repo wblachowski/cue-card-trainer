@@ -3,6 +3,7 @@ import { View } from "react-native";
 import SettingsEdit from "../components/SettingsEdit";
 import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
+import { useTheme } from "react-native-paper";
 import TimeDialog from "../components/TimeDialog";
 import {
   readSettings as readSettingsFromStorage,
@@ -10,7 +11,6 @@ import {
 } from "../utils/Storage";
 import { secsToMinSecStr } from "../utils/TimeHelpers";
 import * as colors from "../styles/colors";
-import { useTheme } from "react-native-paper";
 
 export default function Settings() {
   const themeColors = useTheme().colors;

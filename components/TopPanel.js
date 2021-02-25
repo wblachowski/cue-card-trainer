@@ -1,11 +1,6 @@
 import React from "react";
-import { Text, View } from "react-native";
-import { Switch } from "react-native-paper";
-import {
-  DynamicStyleSheet,
-  useDynamicStyleSheet,
-  DynamicValue,
-} from "react-native-dark-mode";
+import { View, StyleSheet } from "react-native";
+import { Switch, Text } from "react-native-paper";
 import { useTheme } from "react-native-paper";
 import { IconButton } from "react-native-paper";
 
@@ -14,7 +9,6 @@ export default function TopPanel({
   carModeOnClick,
   carModeEnabled,
 }) {
-  const styles = useDynamicStyleSheet(dynamicStyles);
   const { colors } = useTheme();
 
   return (
@@ -37,7 +31,7 @@ export default function TopPanel({
   );
 }
 
-const dynamicStyles = new DynamicStyleSheet({
+const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -52,6 +46,5 @@ const dynamicStyles = new DynamicStyleSheet({
   text: {
     marginLeft: 5,
     marginTop: 10,
-    color: new DynamicValue("black", "white"),
   },
 });
