@@ -5,7 +5,7 @@ import { useDarkMode } from "react-native-dark-mode";
 import Main from "./scenes/Main";
 import Settings from "./scenes/Setttings";
 import { Provider as PaperProvider } from "react-native-paper";
-import { theme, darkTheme } from "./styles/theme";
+import { theme, darkTheme } from "./styles/themes";
 
 const Stack = createStackNavigator();
 
