@@ -28,7 +28,7 @@ export default function TimeDialog({
     <Dialog visible={visible} onDismiss={onClose}>
       <Dialog.Title>{title}</Dialog.Title>
       <Dialog.Content>
-        <Paragraph> {description}</Paragraph>
+        <Paragraph>{description}</Paragraph>
         <View style={styles.timeView}>
           <TextInput
             style={styles.timeInputStyle}
