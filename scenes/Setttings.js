@@ -3,7 +3,7 @@ import { View } from "react-native";
 import SettingsEdit from "../components/SettingsEdit";
 import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
-import { useTheme } from "react-native-paper";
+import { useTheme, Portal } from "react-native-paper";
 import TimeDialog from "../components/TimeDialog";
 import {
   readSettings as readSettingsFromStorage,
@@ -63,24 +63,26 @@ export default function Settings() {
     <View>
       {initialized && (
         <>
-          <TimeDialog
-            title="Answer time"
-            description="Set the time for answering questions."
-            visible={answerTimeDialogVisible}
-            initMinutes={answerPlaceholder[0]}
-            initSeconds={answerPlaceholder[1]}
-            onClose={() => setAnswerTimeDialogVisible(false)}
-            onSave={saveAnswerTime}
-          />
-          <TimeDialog
-            title="Preparation time"
-            description="Set the time for preparing before answering questions."
-            visible={prepTimeDialogVisible}
-            initMinutes={prepPlaceholder[0]}
-            initSeconds={prepPlaceholder[1]}
-            onClose={() => setPrepTimeDialogVisible(false)}
-            onSave={savePrepTime}
-          />
+          <Portal>
+            <TimeDialog
+              title="Answer time"
+              description="Set the time for answering questions."
+              visible={answerTimeDialogVisible}
+              initMinutes={answerPlaceholder[0]}
+              initSeconds={answerPlaceholder[1]}
+              onClose={() => setAnswerTimeDialogVisible(false)}
+              onSave={saveAnswerTime}
+            />
+            <TimeDialog
+              title="Preparation time"
+              description="Set the time for preparing before answering questions."
+              visible={prepTimeDialogVisible}
+              initMinutes={prepPlaceholder[0]}
+              initSeconds={prepPlaceholder[1]}
+              onClose={() => setPrepTimeDialogVisible(false)}
+              onSave={savePrepTime}
+            />
+          </Portal>
           <SettingsEdit
             title="Answer time"
             valuePlaceholder="..."
