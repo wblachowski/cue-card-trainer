@@ -11,9 +11,11 @@ import {
 } from "../utils/Storage";
 import { secsToMinSecStr } from "../utils/TimeHelpers";
 import * as colors from "../styles/colors";
+import { useTheme } from "react-native-paper";
 
 export default function Settings() {
   const isDarkMode = useDarkMode();
+  const themeColors = useTheme().colors;
 
   const [answerTimeDialogVisible, setAnswerTimeDialogVisible] = useState(false);
   const [prepTimeDialogVisible, setPrepTimeDialogVisible] = useState(false);
@@ -60,12 +62,7 @@ export default function Settings() {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: isDarkMode ? colors.DARK_GREY : colors.WHITE,
-        height: "100%",
-      }}
-    >
+    <View>
       {initialized && (
         <>
           <TimeDialog
@@ -105,9 +102,9 @@ export default function Settings() {
             trackColor={{ true: colors.LIGHT, false: colors.GREY }}
             value={prepEnabled}
             containerStyle={{
-              backgroundColor: isDarkMode ? colors.DARK_GREY : colors.WHITE,
+              backgroundColor: themeColors.background,
             }}
-            titleStyle={{ color: isDarkMode ? "white" : "black" }}
+            titleStyle={{ color: themeColors.text }}
           />
         </>
       )}
