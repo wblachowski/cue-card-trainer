@@ -70,7 +70,7 @@ export default function Settings() {
             initMinutes={answerPlaceholder[0]}
             initSeconds={answerPlaceholder[1]}
             onClose={() => setAnswerTimeDialogVisible(false)}
-            onSave={(secs) => saveAnswerTime(secs)}
+            onSave={saveAnswerTime}
           />
           <TimeDialog
             title="Preparation time"
@@ -79,7 +79,7 @@ export default function Settings() {
             initMinutes={prepPlaceholder[0]}
             initSeconds={prepPlaceholder[1]}
             onClose={() => setPrepTimeDialogVisible(false)}
-            onSave={(secs) => savePrepTime(secs)}
+            onSave={savePrepTime}
           />
           <SettingsEdit
             title="Answer time"
@@ -91,9 +91,7 @@ export default function Settings() {
           />
           <SettingsSwitch
             title={"Enable time for preparation"}
-            onValueChange={(value) => {
-              savePrepEnabled(value);
-            }}
+            onValueChange={savePrepEnabled}
             switchProps={{
               thumbColor: prepEnabled ? colors.PRIMARY : colors.WHITE,
             }}
