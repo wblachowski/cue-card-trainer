@@ -1,6 +1,6 @@
 import React from "react";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { Text } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Text, TouchableRipple } from "react-native-paper";
 
 export default function SettingsEdit({
   title,
@@ -9,7 +9,7 @@ export default function SettingsEdit({
   onPress,
 }) {
   return (
-    <TouchableOpacity onPress={() => onPress()}>
+    <TouchableRipple onPress={onPress}>
       <View style={styles.containerStyle}>
         <Text numberOfLines={1} style={styles.titleStyle}>
           {title}
@@ -18,7 +18,7 @@ export default function SettingsEdit({
           {value || valuePlaceholder}
         </Text>
       </View>
-    </TouchableOpacity>
+    </TouchableRipple>
   );
 }
 
