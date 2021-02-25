@@ -1,13 +1,14 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Switch, Text, IconButton, useTheme } from "react-native-paper";
+import * as colors from "../styles/colors";
 
 export default function TopPanel({
   settingsOnClick,
   carModeOnClick,
   carModeEnabled,
 }) {
-  const { colors } = useTheme();
+  const themeColors = useTheme().colors;
 
   return (
     <View style={styles.container}>
@@ -15,7 +16,8 @@ export default function TopPanel({
         <Switch
           onValueChange={carModeOnClick}
           value={carModeEnabled}
-          color={colors.primary}
+          color={themeColors.primary}
+          trackColor={{ false: colors.GREY, true: colors.LIGHT }}
         />
         <Text style={styles.text}>Car mode</Text>
       </View>
@@ -23,7 +25,7 @@ export default function TopPanel({
         icon="settings"
         size={24}
         onPress={settingsOnClick}
-        color={colors.primary}
+        color={themeColors.primary}
       />
     </View>
   );
