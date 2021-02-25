@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, StyleSheet } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import Dialog from "react-native-dialog";
 import { useEffect } from "react/cjs/react.development";
 import { useDarkMode } from "react-native-dark-mode";

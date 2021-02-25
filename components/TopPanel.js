@@ -1,8 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Switch, Text } from "react-native-paper";
-import { useTheme } from "react-native-paper";
-import { IconButton } from "react-native-paper";
+import { Switch, Text, IconButton, useTheme } from "react-native-paper";
 
 export default function TopPanel({
   settingsOnClick,
