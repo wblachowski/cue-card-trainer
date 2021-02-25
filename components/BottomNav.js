@@ -2,7 +2,6 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { TimerStates } from "../utils/Constants";
 import { Button } from "react-native-paper";
-import * as colors from "../styles/colors";
 
 export default function BottomNav({
   timerState,
@@ -37,22 +36,17 @@ export default function BottomNav({
   return (
     <>
       <View style={styles.buttonView}>
-        <Button mode="text" onPress={prevClicked} color={colors.PRIMARY}>
+        <Button mode="text" onPress={prevClicked}>
           Prev
         </Button>
       </View>
       <View style={styles.buttonView}>
-        <Button
-          mode="text"
-          onPress={playClicked}
-          icon={mainButtonIcon()}
-          color={colors.PRIMARY}
-        >
+        <Button mode="text" onPress={playClicked} icon={mainButtonIcon()}>
           {mainButtonText()}
         </Button>
       </View>
       <View style={styles.buttonView}>
-        <Button mode="text" onPress={nextClicked} color={colors.PRIMARY}>
+        <Button mode="text" onPress={nextClicked}>
           Next
         </Button>
       </View>
