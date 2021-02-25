@@ -1,50 +1,35 @@
 import React from "react";
-import { Text, View } from "react-native";
-import {
-  DynamicStyleSheet,
-  DynamicValue,
-  useDynamicStyleSheet,
-  useDarkMode,
-} from "react-native-dark-mode";
+import { View, StyleSheet } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { secsToStr } from "../utils/TimeHelpers";
 import { TimerStates, TimerTypes } from "../utils/Constants";
-import * as colors from "../styles/colors";
 
 export default function Timer({ timerState, timerType, secs }) {
-  const styles = useDynamicStyleSheet(dynamicStyles);
-  const isDarkMode = useDarkMode();
+  const { colors } = useTheme();
 
   return (
     <View>
       <Text
         style={{
           ...styles.timeText,
-          color:
-            timerState === TimerStates.finished
-              ? isDarkMode
-                ? colors.LIGHT_RED
-                : colors.RED
-              : isDarkMode
-              ? "white"
-              : "black",
+          color: timerState === TimerStates.finished ? colors.red : colors.text,
         }}
       >
         {secsToStr(secs)}
       </Text>
-      <Text style={styles.timerTypeText}>
+      <Text style={{ ...styles.timerTypeText, color: colors.grey }}>
         {timerType === TimerTypes.prep ? "preparation" : "answer"}
       </Text>
     </View>
   );
 }
 
-const dynamicStyles = new DynamicStyleSheet({
+const styles = StyleSheet.create({
   timeText: {
     fontSize: 64,
   },
   timerTypeText: {
     textAlign: "center",
     marginTop: -5,
-    color: new DynamicValue(colors.GREY, colors.LIGHTER_GREY),
   },
 });

@@ -17,6 +17,8 @@ export const theme = {
   colors: {
     ...PaperDefaultTheme.colors,
     primary: colors.PRIMARY,
+    red: colors.RED,
+    grey: colors.GREY,
   },
 };
 
@@ -25,5 +27,7 @@ export const darkTheme = {
   colors: {
     ...PaperDarkTheme.colors,
     primary: colors.PRIMARY,
+    red: colors.LIGHT_RED,
+    grey: colors.LIGHTER_GREY,
   },
 };
