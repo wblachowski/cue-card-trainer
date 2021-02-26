@@ -32,7 +32,6 @@ export default function TimeDialog({
         <View style={styles.timeView}>
           <TextInput
             style={styles.timeInputStyle}
-            textAlign="center"
             keyboardType="numeric"
             maxLength={2}
             placeholder={initMinutes}
@@ -41,7 +40,6 @@ export default function TimeDialog({
           <Text style={styles.separator}>:</Text>
           <TextInput
             style={styles.timeInputStyle}
-            textAlign="center"
             keyboardType="numeric"
             maxLength={2}
             placeholder={initSeconds}
@@ -67,6 +65,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     height: 35,
     margin: 5,
+    paddingHorizontal: 6,
+    textAlign: "center",
   },
   separator: {
     position: "absolute",
