@@ -48,7 +48,7 @@ export default function Main({ navigation }) {
     db?.getCardsCount()
       .then(setCardCount)
       .then(Storage.retrieveLastCardId)
-      .then(parseInt)
+      .then((val) => (val ? parseInt(val) : 0))
       .then(setCardId);
   }, [db]);
 
