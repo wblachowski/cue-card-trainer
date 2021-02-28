@@ -1,4 +1,4 @@
-# Cue Card Trainer  <img src="assets/icon_round.png" width="60px"/>
+# Cue Card Trainer <img src="assets/icon_round.png" width="26px"/>
 
 ## Screenshots
 <p float="right">
