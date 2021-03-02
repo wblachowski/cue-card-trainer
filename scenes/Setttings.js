@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, useEffect } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View } from "react-native";
 import SettingsEdit from "../components/SettingsEdit";
 import { SettingsSwitch } from "react-native-settings-components";
 import { useTheme, Portal } from "react-native-paper";
