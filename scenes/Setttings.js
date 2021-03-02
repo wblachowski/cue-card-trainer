@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, useEffect } from "react-native";
 import SettingsEdit from "../components/SettingsEdit";
-import { useEffect } from "react/cjs/react.development";
 import { SettingsSwitch } from "react-native-settings-components";
 import { useTheme, Portal } from "react-native-paper";
 import TimeDialog from "../components/TimeDialog";
