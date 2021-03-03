@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import SettingsEdit from "../components/SettingsEdit";
 import { SettingsSwitch } from "react-native-settings-components";
 import { useTheme, Portal } from "react-native-paper";
+import SettingsEdit from "../components/SettingsEdit";
 import TimeDialog from "../components/TimeDialog";
 import {
   readSettings as readSettingsFromStorage,
