@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Dialog, Paragraph, TextInput, Button, Text } from "react-native-paper";
-import { useEffect } from "react/cjs/react.development";
 
 export default function TimeDialog({
   title,
