@@ -12,7 +12,7 @@ import * as colors from "./colors";
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
 
-export const theme = {
+export const lightTheme = {
   ...CombinedDefaultTheme,
   colors: {
     ...PaperDefaultTheme.colors,
