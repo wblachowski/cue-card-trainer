@@ -69,7 +69,6 @@ export default class Database {
         tx.executeSql(
           "SELECT * FROM cards LIMIT 1 OFFSET ?",
           [id],
-          // success
           (
             txObj,
             {
