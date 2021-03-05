@@ -3,16 +3,15 @@ import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useDarkMode } from "react-native-dark-mode";
+import { Provider as PaperProvider } from "react-native-paper";
 import Main from "./scenes/Main";
 import Settings from "./scenes/Setttings";
-import { Provider as PaperProvider } from "react-native-paper";
 import { lightTheme, darkTheme } from "./styles/themes";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const isDarkMode = useDarkMode();
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  const theme = useDarkMode() ? darkTheme : lightTheme;
 
   return (
     <PaperProvider theme={theme}>
