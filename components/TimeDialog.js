@@ -17,9 +17,12 @@ export default function TimeDialog({
   useEffect(() => setMinutes(initMinutes), [initMinutes]);
   useEffect(() => setSeconds(initSeconds), [initSeconds]);
 
+  const removeNonNumbers = (val) => val.replace(/\D/g, "") || "0";
+
   const saveTime = () => {
     const time =
-      parseInt(minutes ?? initMinutes) * 60 + parseInt(seconds ?? initSeconds);
+      parseInt(removeNonNumbers(minutes) ?? initMinutes) * 60 +
+      parseInt(removeNonNumbers(seconds) ?? initSeconds);
     onSave(time);
   };
 
