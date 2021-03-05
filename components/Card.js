@@ -1,10 +1,8 @@
 import React from "react";
-import { Text, View } from "react-native";
-import { useDarkMode } from "react-native-dark-mode";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function Card({ card }) {
-  const isDarkMode = useDarkMode();
-
   return (
     <View>
       <Text
@@ -12,7 +10,6 @@ export default function Card({ card }) {
           fontSize: 18,
           fontWeight: "bold",
           marginBottom: 16,
-          color: isDarkMode ? "white" : "black",
         }}
       >
         {card.title}
@@ -22,7 +19,6 @@ export default function Card({ card }) {
           fontSize: 14,
           marginTop: 2,
           marginBottom: 2,
-          color: isDarkMode ? "white" : "black",
         }}
       >
         {card.prompt}
@@ -35,7 +31,6 @@ export default function Card({ card }) {
             marginLeft: 20,
             marginTop: 2,
             marginBottom: 2,
-            color: isDarkMode ? "white" : "black",
           }}
         >
           • {bullet}
@@ -46,7 +41,6 @@ export default function Card({ card }) {
           fontSize: 14,
           marginTop: 2,
           marginBottom: 2,
-          color: isDarkMode ? "white" : "black",
         }}
       >
         {card.ending}
