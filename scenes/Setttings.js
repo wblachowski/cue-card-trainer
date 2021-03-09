@@ -94,9 +94,12 @@ export default function Settings() {
             title={"Enable time for preparation"}
             onValueChange={savePrepEnabled}
             switchProps={{
-              thumbColor: prepEnabled ? colors.PRIMARY : colors.WHITE,
+              thumbColor: prepEnabled ? themeColors.primary : colors.WHITE,
             }}
-            trackColor={{ true: colors.LIGHT, false: colors.GREY }}
+            trackColor={{
+              true: themeColors.switchBackground,
+              false: colors.GREY,
+            }}
             value={prepEnabled}
             containerStyle={{
               backgroundColor: themeColors.background,

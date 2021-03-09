@@ -17,7 +17,10 @@ export default function TopPanel({
           onValueChange={carModeOnClick}
           value={carModeEnabled}
           color={themeColors.primary}
-          trackColor={{ false: colors.GREY, true: colors.LIGHT }}
+          trackColor={{
+            false: colors.GREY,
+            true: themeColors.switchBackground,
+          }}
         />
         <Text style={styles.text}>Car mode</Text>
       </View>

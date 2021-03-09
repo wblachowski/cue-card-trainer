@@ -19,6 +19,7 @@ export const lightTheme = {
     primary: colors.PRIMARY,
     red: colors.RED,
     grey: colors.GREY,
+    switchBackground: colors.LIGHT,
   },
 };
 
@@ -26,8 +27,9 @@ export const darkTheme = {
   ...CombinedDarkTheme,
   colors: {
     ...PaperDarkTheme.colors,
-    primary: colors.PRIMARY,
+    primary: colors.PRIMARY_DESATURATED,
     red: colors.LIGHT_RED,
     grey: colors.LIGHTER_GREY,
+    switchBackground: colors.PRIMARY_OVERSATURATED,
   },
 };

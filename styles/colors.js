@@ -1,5 +1,7 @@
-export const PRIMARY = "#2196f3";
-export const LIGHT = "#6ec6ff";
+export const PRIMARY = "#1E85E5";
+export const PRIMARY_DESATURATED = "#8fc8f9";
+export const PRIMARY_OVERSATURATED = "#1144a1";
+export const LIGHT = "#8fc8f9";
 export const DARK = "#0069c0";
 export const GREY = "#767577";
 export const DARK_GREY = "#121212";
