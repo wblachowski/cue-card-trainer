@@ -24,12 +24,7 @@ export default function TopPanel({
         />
         <Text style={styles.text}>Car mode</Text>
       </View>
-      <IconButton
-        icon="settings"
-        size={24}
-        onPress={settingsOnClick}
-        color={themeColors.primary}
-      />
+      <IconButton icon="settings" size={24} onPress={settingsOnClick} />
     </View>
   );
 }
