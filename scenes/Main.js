@@ -6,6 +6,8 @@ import {
   View,
   ScrollView,
   StyleSheet,
+  Text,
+  useWindowDimensions,
 } from "react-native";
 import BackgroundTimer from "react-native-background-timer";
 import TopPanel from "../components/TopPanel";
@@ -16,18 +18,20 @@ import { TimerStates, TimerTypes } from "../utils/Constants";
 import Database from "../utils/Database";
 import * as Storage from "../utils/Storage";
 import * as Speech from "../utils/Speech";
+import Carousel from "react-native-snap-carousel";
 
 export default function Main({ navigation }) {
-  const [card, setCard] = useState();
+  const [cards, setCards] = useState([]);
+  const [cardId, setCardId] = useState();
   const [settings, setSettings] = useState({});
   const [secs, setSecs] = useState();
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [timerType, setTimerType] = useState(TimerTypes.none);
-  const [cardId, setCardId] = useState(-1);
-  const [cardCount, setCardCount] = useState(-1);
   const [carModeEnabled, setCarModeEnabled] = useState(false);
   const [db, setDb] = useState();
   const [initilized, setInitialized] = useState(false);
+
+  const sliderWidth = useWindowDimensions().width;
 
   useEffect(() => {
     Database.initialize().then(setDb);
@@ -45,14 +49,17 @@ export default function Main({ navigation }) {
   useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
 
   useEffect(() => {
-    db?.getCardsCount()
-      .then(setCardCount)
+    db?.fetchCards()
+      .then(setCards)
+      .then(() => console.log(cards[0]))
       .then(Storage.retrieveLastCardId)
       .then((val) => (val ? parseInt(val) : 0))
       .then(setCardId);
   }, [db]);
 
   useEffect(() => {
+    console.log("card id");
+    console.log(cardId);
     if (cardId >= 0) {
       if (settings.prepEnabled) {
         setSecs(settings.prepTime);
@@ -62,19 +69,18 @@ export default function Main({ navigation }) {
         setTimerType(TimerTypes.answer);
       }
       setTimerState(TimerStates.notStarted);
-      fetchData(cardId);
       Storage.storeLastCardId(cardId);
     }
   }, [cardId]);
 
   useEffect(() => {
-    if (card && carModeEnabled) {
-      Speech.readCard(card, timerType, startTimer);
+    if (carModeEnabled) {
+      Speech.readCard(cards[cardId], timerType, startTimer);
     }
     if (!carModeEnabled) {
       Speech.stop();
     }
-  }, [card, carModeEnabled]);
+  }, [cardId, carModeEnabled]);
 
   useEffect(() => {
     let interval = null;
@@ -117,13 +123,11 @@ export default function Main({ navigation }) {
       .then(() => setInitialized(true));
   };
 
-  const fetchData = (cardId) => db.fetchData(cardId).then(setCard);
-
   const nextCard = () =>
-    setCardId((prev) => (prev + 1 >= cardCount ? 0 : prev + 1));
+    setCardId((prev) => (prev + 1 >= cards.length ? 0 : prev + 1));
 
   const prevCard = () =>
-    setCardId((prev) => (prev - 1 < 0 ? cardCount - 1 : prev - 1));
+    setCardId((prev) => (prev - 1 < 0 ? cards.length - 1 : prev - 1));
 
   const startTimer = () => {
     if (settings.prepEnabled) {
@@ -155,8 +159,19 @@ export default function Main({ navigation }) {
 
   const carModeOnClick = () => setCarModeEnabled((prev) => !prev);
 
+  const renderItem = ({ item }) => {
+    return (
+      <ScrollView style={styles.cardView}>
+        <Text style={{ color: "white" }}>
+          {item.id + 1}/{cards.length}
+        </Text>
+        <Card card={item} />
+      </ScrollView>
+    );
+  };
+
   return (
-    (initilized && card && (
+    (initilized && cardId !== undefined && (
       <SafeAreaView style={styles.container}>
         <View style={styles.topPanelView}>
           <TopPanel
@@ -165,9 +180,17 @@ export default function Main({ navigation }) {
             carModeEnabled={carModeEnabled}
           />
         </View>
-        <ScrollView style={styles.cardView}>
-          <Card card={card} />
-        </ScrollView>
+        <View style={styles.carouselView}>
+          <Carousel
+            data={cards}
+            loop={true}
+            renderItem={renderItem}
+            sliderWidth={sliderWidth}
+            // onSnapToItem={setCardId}
+            onSnapToItem={(index) => console.log(index)}
+            itemWidth={sliderWidth - 40}
+          />
+        </View>
         <View style={styles.timerView}>
           <Timer timerState={timerState} timerType={timerType} secs={secs} />
         </View>
@@ -199,14 +222,19 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     width: "100%",
   },
-  cardView: {
+  carouselView: {
     position: "absolute",
-    height: 300,
+    top: 225,
+    height: 275,
+  },
+  cardView: {
+    height: "100%",
     overflow: "scroll",
-    left: 0,
-    top: 180,
     paddingLeft: 30,
     paddingRight: 30,
+    borderColor: "blue",
+    borderWidth: 1,
+    backgroundColor: "black",
   },
   timerView: {
     position: "absolute",
