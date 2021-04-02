@@ -226,21 +226,20 @@ const styles = StyleSheet.create({
   },
   carouselView: {
     position: "absolute",
-    top: 225,
-    height: 275,
+    top: 175,
+    height: 325,
   },
   cardView: {
     height: "100%",
     overflow: "scroll",
-    paddingLeft: 30,
-    paddingRight: 30,
+    padding: 15,
     borderColor: "blue",
     borderWidth: 1,
     backgroundColor: "black",
   },
   timerView: {
     position: "absolute",
-    bottom: 150,
+    bottom: 125,
   },
   bottomNavView: {
     flexDirection: "row",
