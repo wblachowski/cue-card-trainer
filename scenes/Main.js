@@ -30,6 +30,7 @@ export default function Main({ navigation }) {
   const [carModeEnabled, setCarModeEnabled] = useState(false);
   const [db, setDb] = useState();
   const [initilized, setInitialized] = useState(false);
+  const [lastSaved, setLastSaved] = useState();
 
   const sliderWidth = useWindowDimensions().width;
 
@@ -51,11 +52,14 @@ export default function Main({ navigation }) {
   useEffect(() => {
     db?.fetchCards()
       .then(setCards)
-      .then(() => console.log(cards[0]))
       .then(Storage.retrieveLastCardId)
       .then((val) => (val ? parseInt(val) : 0))
-      .then(setCardId);
+      .then(setLastSaved);
   }, [db]);
+
+  useEffect(() => {
+    setCards(cards.slice(lastSaved).concat(cards.slice(0, lastSaved)));
+  }, [lastSaved]);
 
   useEffect(() => {
     console.log("card id");
@@ -171,7 +175,7 @@ export default function Main({ navigation }) {
   };
 
   return (
-    (initilized && cardId !== undefined && (
+    (initilized && lastSaved !== undefined && (
       <SafeAreaView style={styles.container}>
         <View style={styles.topPanelView}>
           <TopPanel
@@ -185,9 +189,8 @@ export default function Main({ navigation }) {
             data={cards}
             loop={true}
             renderItem={renderItem}
+            onSnapToItem={(id) => setCardId(cards[id].id)}
             sliderWidth={sliderWidth}
-            // onSnapToItem={setCardId}
-            onSnapToItem={(index) => console.log(index)}
             itemWidth={sliderWidth - 40}
           />
         </View>
