@@ -22,7 +22,7 @@ export default function TopPanel({
             true: themeColors.switchBackground,
           }}
         />
-        <Text style={styles.text}>Car mode</Text>
+        <Text style={styles.text}>Auto mode</Text>
       </View>
       <IconButton icon="settings" size={24} onPress={settingsOnClick} />
     </View>
