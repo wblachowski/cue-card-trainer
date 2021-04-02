@@ -1,23 +1,43 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Text } from "react-native-paper";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { Text, Card as PaperCard } from "react-native-paper";
 
-export default function Card({ card }) {
+export default function Card({ card, cardsCount }) {
   return (
-    <View>
-      <Text style={styles.titleText}>{card.title}</Text>
-      <Text style={styles.promptText}>{card.prompt}</Text>
-      {(card.bullets || []).map((bullet, i) => (
-        <Text key={i} style={styles.bulletText}>
-          • {bullet}
-        </Text>
-      ))}
-      <Text style={styles.endingText}>{card.ending}</Text>
-    </View>
+    <ScrollView style={styles.cardView} contentContainerStyle={{ flexGrow: 1 }}>
+      <PaperCard style={styles.cardView}>
+        <PaperCard.Content>
+          <Text style={styles.cardNumberText}>
+            {card.id + 1}/{cardsCount}
+          </Text>
+          <View>
+            <Text style={styles.titleText}>{card.title}</Text>
+            <Text style={styles.promptText}>{card.prompt}</Text>
+            {(card.bullets || []).map((bullet, i) => (
+              <Text key={i} style={styles.bulletText}>
+                • {bullet}
+              </Text>
+            ))}
+            <Text style={styles.endingText}>{card.ending}</Text>
+          </View>
+        </PaperCard.Content>
+      </PaperCard>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    overflow: "scroll",
+    borderRadius: 4,
+  },
+  cardView: {
+    flex: 0.98,
+  },
+  cardNumberText: {
+    opacity: 0.6,
+    marginBottom: 4,
+  },
   titleText: {
     fontSize: 18,
     fontWeight: "bold",

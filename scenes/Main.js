@@ -162,20 +162,9 @@ export default function Main({ navigation }) {
 
   const carModeOnClick = () => setCarModeEnabled((prev) => !prev);
 
-  const renderItem = ({ item }) => {
-    return (
-      <Paper.Card>
-        <Paper.Card.Content>
-          <ScrollView style={styles.cardView}>
-            <Paper.Text style={{ opacity: 0.6, marginBottom: 4 }}>
-              {item.id + 1}/{cards.length}
-            </Paper.Text>
-            <Card card={item} />
-          </ScrollView>
-        </Paper.Card.Content>
-      </Paper.Card>
-    );
-  };
+  const renderItem = ({ item }) => (
+    <Card card={item} cardsCount={cards.length} />
+  );
 
   return (
     (initilized && lastSaved !== undefined && (
@@ -233,10 +222,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 175,
     height: 325,
-  },
-  cardView: {
-    height: "100%",
-    overflow: "scroll",
   },
   timerView: {
     position: "absolute",
