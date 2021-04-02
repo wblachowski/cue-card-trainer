@@ -12,6 +12,7 @@ import {
 import BackgroundTimer from "react-native-background-timer";
 import TopPanel from "../components/TopPanel";
 import Card from "../components/Card";
+import * as Paper from "react-native-paper";
 import Timer from "../components/Timer";
 import BottomNav from "../components/BottomNav";
 import { TimerStates, TimerTypes } from "../utils/Constants";
@@ -163,12 +164,16 @@ export default function Main({ navigation }) {
 
   const renderItem = ({ item }) => {
     return (
-      <ScrollView style={styles.cardView}>
-        <Text style={{ color: "white" }}>
-          {item.id + 1}/{cards.length}
-        </Text>
-        <Card card={item} />
-      </ScrollView>
+      <Paper.Card>
+        <Paper.Card.Content>
+          <ScrollView style={styles.cardView}>
+            <Paper.Text style={{ opacity: 0.6, marginBottom: 4 }}>
+              {item.id + 1}/{cards.length}
+            </Paper.Text>
+            <Card card={item} />
+          </ScrollView>
+        </Paper.Card.Content>
+      </Paper.Card>
     );
   };
 
@@ -190,7 +195,7 @@ export default function Main({ navigation }) {
             renderItem={renderItem}
             onSnapToItem={(id) => setCardId(cards[id].id)}
             sliderWidth={sliderWidth}
-            itemWidth={sliderWidth - 40}
+            itemWidth={sliderWidth - 60}
           />
         </View>
         <View style={styles.timerView}>
@@ -232,10 +237,6 @@ const styles = StyleSheet.create({
   cardView: {
     height: "100%",
     overflow: "scroll",
-    padding: 15,
-    borderColor: "blue",
-    borderWidth: 1,
-    backgroundColor: "black",
   },
   timerView: {
     position: "absolute",
