@@ -63,6 +63,24 @@ export default class Database {
       )
     );
 
+  fetchCards = () =>
+    new Promise((resolve, reject) =>
+      this.db.transaction((tx) =>
+        tx.executeSql(
+          "SELECT * FROM cards",
+          [],
+          (txObj, { rows: { _array: cards } }) => {
+            cards.forEach((card, idx) => {
+              card.bullets = card.bullets?.split("\n") || [];
+              card.id = idx;
+            });
+            resolve(cards);
+          },
+          reject
+        )
+      )
+    );
+
   fetchData = (id = 0) =>
     new Promise((resolve, reject) =>
       this.db.transaction((tx) =>
