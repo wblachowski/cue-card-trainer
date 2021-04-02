@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   SafeAreaView,
   Platform,
@@ -32,6 +32,7 @@ export default function Main({ navigation }) {
   const [initilized, setInitialized] = useState(false);
   const [lastSaved, setLastSaved] = useState();
 
+  const carousel = useRef(null);
   const sliderWidth = useWindowDimensions().width;
 
   useEffect(() => {
@@ -62,8 +63,7 @@ export default function Main({ navigation }) {
   }, [lastSaved]);
 
   useEffect(() => {
-    console.log("card id");
-    console.log(cardId);
+    console.log("card id:", cardId);
     if (cardId >= 0) {
       if (settings.prepEnabled) {
         setSecs(settings.prepTime);
@@ -127,11 +127,9 @@ export default function Main({ navigation }) {
       .then(() => setInitialized(true));
   };
 
-  const nextCard = () =>
-    setCardId((prev) => (prev + 1 >= cards.length ? 0 : prev + 1));
+  const nextCard = () => carousel.current.snapToNext();
 
-  const prevCard = () =>
-    setCardId((prev) => (prev - 1 < 0 ? cards.length - 1 : prev - 1));
+  const prevCard = () => carousel.current.snapToPrev();
 
   const startTimer = () => {
     if (settings.prepEnabled) {
@@ -186,6 +184,7 @@ export default function Main({ navigation }) {
         </View>
         <View style={styles.carouselView}>
           <Carousel
+            ref={carousel}
             data={cards}
             loop={true}
             renderItem={renderItem}
