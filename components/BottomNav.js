@@ -3,12 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { TimerStates } from "../utils/Constants";
 import { Button } from "react-native-paper";
 
-export default function BottomNav({
-  timerState,
-  prevClicked,
-  playClicked,
-  nextClicked,
-}) {
+export default function BottomNav({ timerState, playClicked }) {
   const mainButtonText = () => {
     switch (timerState) {
       case TimerStates.notStarted:
@@ -34,23 +29,11 @@ export default function BottomNav({
   };
 
   return (
-    <>
-      <View style={styles.buttonView}>
-        <Button mode="text" onPress={prevClicked}>
-          Prev
-        </Button>
-      </View>
-      <View style={styles.buttonView}>
-        <Button mode="text" onPress={playClicked} icon={mainButtonIcon()}>
-          {mainButtonText()}
-        </Button>
-      </View>
-      <View style={styles.buttonView}>
-        <Button mode="text" onPress={nextClicked}>
-          Next
-        </Button>
-      </View>
-    </>
+    <View style={styles.buttonView}>
+      <Button mode="text" onPress={playClicked} icon={mainButtonIcon()}>
+        {mainButtonText()}
+      </Button>
+    </View>
   );
 }
 
