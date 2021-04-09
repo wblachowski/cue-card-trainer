@@ -30,7 +30,7 @@ export default function Main({ navigation }) {
   const [initilized, setInitialized] = useState(false);
   const [lastSaved, setLastSaved] = useState();
 
-  const carousel = useRef(null);
+  const carousel = useRef();
   const sliderWidth = useWindowDimensions().width;
 
   useEffect(() => {
@@ -125,9 +125,9 @@ export default function Main({ navigation }) {
       .then(() => setInitialized(true));
   };
 
-  const nextCard = () => carousel.current.snapToNext();
+  const nextCard = () => carousel?.current.snapToNext();
 
-  const prevCard = () => carousel.current.snapToPrev();
+  const prevCard = () => carousel?.current.snapToPrev();
 
   const startTimer = () => {
     if (settings.prepEnabled) {
