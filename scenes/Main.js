@@ -4,22 +4,19 @@ import {
   Platform,
   StatusBar,
   View,
-  ScrollView,
   StyleSheet,
-  Text,
   useWindowDimensions,
 } from "react-native";
 import BackgroundTimer from "react-native-background-timer";
+import Carousel from "react-native-snap-carousel";
 import TopPanel from "../components/TopPanel";
 import Card from "../components/Card";
-import * as Paper from "react-native-paper";
 import Timer from "../components/Timer";
 import BottomNav from "../components/BottomNav";
 import { TimerStates, TimerTypes } from "../utils/Constants";
 import Database from "../utils/Database";
 import * as Storage from "../utils/Storage";
 import * as Speech from "../utils/Speech";
-import Carousel from "react-native-snap-carousel";
 
 export default function Main({ navigation }) {
   const [cards, setCards] = useState([]);
