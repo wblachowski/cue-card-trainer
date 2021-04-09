@@ -32,7 +32,7 @@ export default class Database {
       `${FileSystem.documentDirectory}` + "SQLite/cards.db"
     );
     if (!dbInfo.exists) {
-      console.log("db doesnt exist");
+      console.log("db doesn't yet exist");
       return FileSystem.downloadAsync(
         Asset.fromModule(require("../assets/cards.db")).uri,
         FileSystem.documentDirectory + "SQLite/cards.db"
@@ -75,30 +75,6 @@ export default class Database {
               card.id = idx;
             });
             resolve(cards);
-          },
-          reject
-        )
-      )
-    );
-
-  fetchData = (id = 0) =>
-    new Promise((resolve, reject) =>
-      this.db.transaction((tx) =>
-        tx.executeSql(
-          "SELECT * FROM cards LIMIT 1 OFFSET ?",
-          [id],
-          (
-            txObj,
-            {
-              rows: {
-                _array: [fetchedCard],
-              },
-            }
-          ) => {
-            if (fetchedCard) {
-              fetchedCard.bullets = fetchedCard.bullets?.split("\n") || [];
-              resolve(fetchedCard);
-            }
           },
           reject
         )
