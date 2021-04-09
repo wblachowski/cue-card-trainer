@@ -42,27 +42,6 @@ export default class Database {
     return new Database("cards.db");
   };
 
-  getCardsCount = () =>
-    new Promise((resolve, reject) =>
-      this.db.transaction((tx) =>
-        tx.executeSql(
-          "SELECT COUNT(*) AS count FROM cards",
-          null,
-          (
-            txObj,
-            {
-              rows: {
-                _array: [{ count }],
-              },
-            }
-          ) => {
-            resolve(count);
-          },
-          reject
-        )
-      )
-    );
-
   fetchCards = () =>
     new Promise((resolve, reject) =>
       this.db.transaction((tx) =>
