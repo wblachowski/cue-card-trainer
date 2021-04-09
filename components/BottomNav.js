@@ -39,9 +39,7 @@ export default function BottomNav({ timerState, playClicked }) {
 
 const styles = StyleSheet.create({
   buttonView: {
-    justifyContent: "space-between",
+    alignItems: "center",
     flex: 1,
-    marginLeft: 4,
-    marginRight: 4,
   },
 });
