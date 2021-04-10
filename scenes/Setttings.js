@@ -11,7 +11,7 @@ import {
 import { secsToMinSecStr } from "../utils/TimeHelpers";
 import * as colors from "../styles/colors";
 
-export default function Settings() {
+export default function Settings({ route }) {
   const themeColors = useTheme().colors;
 
   const [answerTimeDialogVisible, setAnswerTimeDialogVisible] = useState(false);
@@ -44,18 +44,24 @@ export default function Settings() {
   const saveAnswerTime = (secs) => {
     setAnswerTimeDialogVisible(false);
     setAnswerTime(secs);
-    saveSetting("answerTime", secs.toString());
+    saveSetting("answerTime", secs.toString()).then(
+      route.params.onSettingsChanged
+    );
   };
 
   const savePrepTime = (secs) => {
     setPrepTimeDialogVisible(false);
     setPrepTime(secs);
-    saveSetting("prepTime", secs.toString());
+    saveSetting("prepTime", secs.toString()).then(
+      route.params.onSettingsChanged
+    );
   };
 
   const savePrepEnabled = (value) => {
     setPrepEnabled(value);
-    saveSetting("prepEnabled", value.toString());
+    saveSetting("prepEnabled", value.toString()).then(
+      route.params.onSettingsChanged
+    );
   };
 
   return (

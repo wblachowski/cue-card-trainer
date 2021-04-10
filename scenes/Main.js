@@ -27,7 +27,8 @@ export default function Main({ navigation }) {
   const [timerType, setTimerType] = useState(TimerTypes.none);
   const [carModeEnabled, setCarModeEnabled] = useState(false);
   const [db, setDb] = useState();
-  const [initilized, setInitialized] = useState(false);
+  const [settingsInitilized, setSettingsInitialized] = useState(false);
+  const [cardsInitilized, setCardsInitialized] = useState(false);
   const [lastSaved, setLastSaved] = useState();
 
   const carousel = useRef();
@@ -46,8 +47,6 @@ export default function Main({ navigation }) {
     }
   }, [timerType]);
 
-  useEffect(() => navigation.addListener("focus", readSettings), [navigation]);
-
   useEffect(() => {
     db?.fetchCards()
       .then(setCards)
@@ -56,9 +55,7 @@ export default function Main({ navigation }) {
       .then(setLastSaved);
   }, [db]);
 
-  useEffect(() => {
-    setCards(cards.slice(lastSaved).concat(cards.slice(0, lastSaved)));
-  }, [lastSaved]);
+  useEffect(() => setupCards(lastSaved), [lastSaved]);
 
   useEffect(() => {
     console.log("card id:", cardId);
@@ -108,7 +105,7 @@ export default function Main({ navigation }) {
   }, [timerState, secs]);
 
   const readSettings = () => {
-    setInitialized(false);
+    setSettingsInitialized(false);
     Storage.readSettings()
       .then((settings) => {
         setSettings(settings);
@@ -122,7 +119,15 @@ export default function Main({ navigation }) {
         }
         setTimerState(TimerStates.notStarted);
       })
-      .then(() => setInitialized(true));
+      .then(() => setSettingsInitialized(true));
+  };
+
+  const setupCards = (firstCardId) => {
+    if (!firstCardId || !cards.length) return;
+    setCardsInitialized(false);
+    const offset = cards.findIndex((card) => card.id === firstCardId);
+    setCards(cards.slice(offset).concat(cards.slice(0, offset)));
+    setCardsInitialized(true);
   };
 
   const nextCard = () => carousel?.current.snapToNext();
@@ -152,9 +157,16 @@ export default function Main({ navigation }) {
     }
   };
 
+  const onSettingsChanged = () => {
+    readSettings();
+    Storage.retrieveLastCardId()
+      .then((val) => (val ? parseInt(val) : 0))
+      .then(setLastSaved);
+  };
+
   const settingsOnClick = () => {
     setTimerState(TimerStates.paused);
-    navigation.navigate("Settings");
+    navigation.navigate("Settings", { onSettingsChanged: onSettingsChanged });
   };
 
   const carModeOnClick = () => setCarModeEnabled((prev) => !prev);
@@ -164,7 +176,7 @@ export default function Main({ navigation }) {
   );
 
   return (
-    (initilized && lastSaved !== undefined && (
+    (settingsInitilized && cardsInitilized && (
       <SafeAreaView style={styles.container}>
         <View style={styles.topPanelView}>
           <TopPanel
