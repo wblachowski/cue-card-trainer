@@ -123,10 +123,10 @@ export default function Main({ navigation }) {
   };
 
   const setupCards = (firstCardId) => {
-    if (!firstCardId || !cards.length) return;
+    if (!cards.length) return;
     setCardsInitialized(false);
     const offset = cards.findIndex((card) => card.id === firstCardId);
-    setCards(cards.slice(offset).concat(cards.slice(0, offset)));
+    offset > 0 && setCards(cards.slice(offset).concat(cards.slice(0, offset)));
     setCardsInitialized(true);
   };
 
