@@ -5,17 +5,17 @@ import * as colors from "../styles/colors";
 
 export default function TopPanel({
   settingsOnClick,
-  carModeOnClick,
-  carModeEnabled,
+  autoModeOnClick,
+  autoModeEnabled,
 }) {
   const themeColors = useTheme().colors;
 
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.row, ...styles.carMode }}>
+      <View style={{ ...styles.row, ...styles.autoMode }}>
         <Switch
-          onValueChange={carModeOnClick}
-          value={carModeEnabled}
+          onValueChange={autoModeOnClick}
+          value={autoModeEnabled}
           color={themeColors.primary}
           trackColor={{
             false: colors.GREY,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 4,
   },
-  carMode: {
+  autoMode: {
     marginTop: 4,
   },
   text: {

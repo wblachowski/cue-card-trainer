@@ -20,12 +20,12 @@ import * as Speech from "../utils/Speech";
 
 export default function Main({ navigation }) {
   const [cards, setCards] = useState([]);
-  const [cardId, setCardId] = useState();
+  const [cardId, setCardId] = useState(0);
   const [settings, setSettings] = useState({});
   const [secs, setSecs] = useState();
   const [timerState, setTimerState] = useState(TimerStates.notStarted);
   const [timerType, setTimerType] = useState(TimerTypes.none);
-  const [carModeEnabled, setCarModeEnabled] = useState(false);
+  const [autoModeEnabled, setAutoModeEnabled] = useState(false);
   const [db, setDb] = useState();
   const [settingsInitilized, setSettingsInitialized] = useState(false);
   const [cardsInitilized, setCardsInitialized] = useState(false);
@@ -73,13 +73,14 @@ export default function Main({ navigation }) {
   }, [cardId]);
 
   useEffect(() => {
-    if (carModeEnabled) {
-      Speech.readCard(cards[cardId], timerType, startTimer);
+    if (autoModeEnabled) {
+      const card = cards.find((c) => c.id === cardId);
+      Speech.readCard(card, timerType, startTimer);
     }
-    if (!carModeEnabled) {
+    if (!autoModeEnabled) {
       Speech.stop();
     }
-  }, [cardId, carModeEnabled]);
+  }, [cardId, autoModeEnabled]);
 
   useEffect(() => {
     let interval = null;
@@ -93,12 +94,12 @@ export default function Main({ navigation }) {
       setTimerState(TimerStates.finished);
     }
     if (secs < 0 && timerType === TimerTypes.prep) {
-      if (carModeEnabled) {
+      if (autoModeEnabled) {
         Speech.speak("Answer", () => setTimerType(TimerTypes.answer));
       }
       setTimerType(TimerTypes.answer);
     }
-    if (timerState === TimerStates.finished && carModeEnabled) {
+    if (timerState === TimerStates.finished && autoModeEnabled) {
       Speech.speak("Time's up!", nextCard);
     }
     return () => BackgroundTimer.clearInterval(interval);
@@ -169,7 +170,7 @@ export default function Main({ navigation }) {
     navigation.navigate("Settings", { onSettingsChanged: onSettingsChanged });
   };
 
-  const carModeOnClick = () => setCarModeEnabled((prev) => !prev);
+  const autoModeOnClick = () => setAutoModeEnabled((prev) => !prev);
 
   const renderItem = ({ item }) => (
     <Card card={item} cardsCount={cards.length} />
@@ -181,8 +182,8 @@ export default function Main({ navigation }) {
         <View style={styles.topPanelView}>
           <TopPanel
             settingsOnClick={settingsOnClick}
-            carModeOnClick={carModeOnClick}
-            carModeEnabled={carModeEnabled}
+            autoModeOnClick={autoModeOnClick}
+            autoModeEnabled={autoModeEnabled}
           />
         </View>
         <View style={styles.carouselView}>
