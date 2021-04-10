@@ -190,7 +190,8 @@ export default function Main({ navigation }) {
             ref={carousel}
             data={cards}
             loop={true}
-            loopClonesPerSide={30}
+            activeSlideOffset={10}
+            loopClonesPerSide={3}
             renderItem={renderItem}
             onSnapToItem={(id) => setCardId(cards[id].id)}
             sliderWidth={sliderWidth}
