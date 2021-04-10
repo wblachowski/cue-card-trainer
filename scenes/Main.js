@@ -59,7 +59,7 @@ export default function Main({ navigation }) {
 
   useEffect(() => {
     console.log("card id:", cardId);
-    if (cardId >= 0) {
+    if (cardId !== undefined) {
       if (settings.prepEnabled) {
         setSecs(settings.prepTime);
         setTimerType(TimerTypes.prep);
@@ -190,6 +190,7 @@ export default function Main({ navigation }) {
             ref={carousel}
             data={cards}
             loop={true}
+            loopClonesPerSide={30}
             renderItem={renderItem}
             onSnapToItem={(id) => setCardId(cards[id].id)}
             sliderWidth={sliderWidth}
