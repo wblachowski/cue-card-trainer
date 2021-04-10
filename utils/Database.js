@@ -33,7 +33,7 @@ export default class Database {
     );
     if (!dbInfo.exists) {
       console.log("db doesn't yet exist");
-      return FileSystem.downloadAsync(
+      await FileSystem.downloadAsync(
         Asset.fromModule(require("../assets/cards.db")).uri,
         FileSystem.documentDirectory + "SQLite/cards.db"
       );
